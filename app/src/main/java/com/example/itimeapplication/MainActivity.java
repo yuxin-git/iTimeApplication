@@ -5,6 +5,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,9 +63,12 @@ public class MainActivity extends AppCompatActivity {
             TextView date = (TextView)item.findViewById(R.id.text_view_date);
 
             Time time_item = this.getItem(position);
-            remain_time.setText(time_item.getName());
+            remain_time.setText(time_item.getRemain_time());
+            Resources resources=getBaseContext().getResources();
+            Drawable drawable=resources.getDrawable(R.drawable.a1);
+            remain_time.setBackgroundDrawable(drawable);
             name.setText(time_item.getName());
-            date.setText(time_item.getName());
+            date.setText(time_item.getDate());
 
 
             return item;
