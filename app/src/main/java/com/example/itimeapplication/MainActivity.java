@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayList<Time> times;
+    private ArrayList<Time> times=new ArrayList<Time>();
     private TimesArrayAdapter theAdapter;
     ListView listViewTime;
     private Button buttonAdd;
@@ -35,16 +35,19 @@ public class MainActivity extends AppCompatActivity {
 
         InitData();
         theAdapter=new TimesArrayAdapter(this,R.layout.list_item_time, times);
+
         listViewTime= this.findViewById(R.id.list_view_time);
         listViewTime.setAdapter(theAdapter);
+        buttonAdd=findViewById(R.id.button_add);
 
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(MainActivity.this, AddTimeActivity.class);
-                startActivity(intent);
+                Intent intent=new Intent(MainActivity.this, AddNewTimeActivity.class);
+                startActivityForResult(intent,1);
             }
         });
+
 
 
     }
@@ -52,21 +55,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case RESULT_OK: {
-                String name=data.getStringExtra("time_name");
-                String description=data.getStringExtra("time_decription");
+        if(requestCode==1) {
+            if (resultCode == 1) {
+                String name = data.getStringExtra("time_name");
+                String description = data.getStringExtra("time_description");
 
-                times.add(new Time("未知",name,"data",description));
+                times.add(new Time("未知", name, "data", description));
                 theAdapter.notifyDataSetChanged();
-
             }
         }
+
     }
 
     private void InitData()
     {
-        times =new ArrayList<Time>();
         times.add(new Time("DAYS","Birthday1","2001","无"));
         times.add(new Time("2DAYS","bir2","2003","无"));
         times.add(new Time("ADAYS","birth4","1999","无"));

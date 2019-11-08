@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddTimeActivity">
+    tools:context=".AddNewTimeActivity">
 
     <TextView
         android:id="@+id/text_view_tips_name"
@@ -22,12 +22,11 @@
         android:id="@+id/edit_text_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
         android:ems="15"
         android:inputType="textPersonName"
         android:text="Anniversary，birthday，festival"
-        app:layout_constraintStart_toStartOf="@+id/text_view_name"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_name" />
+        app:layout_constraintStart_toStartOf="@+id/text_view_tips_name"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_tips_name" />
 
 
     <TextView
@@ -37,19 +36,18 @@
         android:layout_marginTop="30dp"
         android:text="Description(Optional)"
         android:textSize="22dp"
-        app:layout_constraintStart_toStartOf="@+id/text_view_name"
+        app:layout_constraintStart_toStartOf="@+id/text_view_tips_name"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_name" />
 
     <EditText
         android:id="@+id/edit_text_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
         android:ems="15"
         android:inputType="textPersonName"
         android:text="Notes or quotes"
-        app:layout_constraintStart_toStartOf="@+id/text_view_description"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_description" />
+        app:layout_constraintStart_toStartOf="@+id/text_view_tips_description"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_tips_description" />
 
     <Button
         android:id="@+id/button_back"
@@ -74,6 +72,5 @@
         android:textSize="17dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

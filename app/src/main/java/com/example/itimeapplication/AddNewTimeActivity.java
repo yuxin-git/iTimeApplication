@@ -7,27 +7,25 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
-public class AddTimeActivity extends AppCompatActivity {
+public class AddNewTimeActivity extends AppCompatActivity {
 
-    private EditText editTextName,editTextDecription;
+    private EditText editTextName,editTextDescription;
     private Button buttonBack,buttonOk;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_time);
+        setContentView(R.layout.activity_add_new_time);
 
         editTextName=findViewById(R.id.edit_text_name);
-        editTextDecription=findViewById(R.id.edit_text_description);
+        editTextDescription=findViewById(R.id.edit_text_description);
         buttonBack=findViewById(R.id.button_back);
         buttonOk=findViewById(R.id.button_ok);
 
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddTimeActivity.this.finish();
+                AddNewTimeActivity.this.finish();
             }
         });
 
@@ -37,12 +35,11 @@ public class AddTimeActivity extends AppCompatActivity {
                 Intent intent=new Intent();
                 //将要传递的值附加到Intent对象
                 intent.putExtra("time_name",editTextName.getText().toString().trim());
-                intent.putExtra("time_description",editTextDecription.getText().toString().trim());
-                setResult(RESULT_OK,intent);
+                intent.putExtra("time_description",editTextDescription.getText().toString().trim());
+                setResult(1,intent);
 
-                AddTimeActivity.this.finish();
+                AddNewTimeActivity.this.finish();
             }
         });
-
     }
 }
