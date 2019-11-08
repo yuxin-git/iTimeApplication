@@ -5,12 +5,15 @@ public class Time {
     private String remain_time;
     private String name;
     private String date;
+    private String description;
 
-    public Time(String remain_time, String name, String date) {
+    public Time(String remain_time, String name, String date,String description) {
         this.remain_time = remain_time;
         this.name = name;
         this.date = date;
+        this.description=description;
     }
+
 
     public String getRemain_time() {
         return remain_time;
@@ -34,6 +37,14 @@ public class Time {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 
