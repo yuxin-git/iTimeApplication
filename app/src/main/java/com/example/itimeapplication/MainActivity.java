@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 String name = data.getStringExtra("time_name");
                 String description = data.getStringExtra("time_description");
 
-                times.add(new Time("未知", name, "data", description));
+                times.add(new Time(R.drawable.a1,"未知", name, "data", description));
                 theAdapter.notifyDataSetChanged();
             }
         }
@@ -69,9 +70,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void InitData()
     {
-        times.add(new Time("DAYS","Birthday1","2001","无"));
-        times.add(new Time("2DAYS","bir2","2003","无"));
-        times.add(new Time("ADAYS","birth4","1999","无"));
+        times.add(new Time(R.drawable.a1,"DAYS","Birthday1","2001","无"));
+        times.add(new Time(R.drawable.a1,"2DAYS","bir2","2003","无"));
+        times.add(new Time(R.drawable.a1,"ADAYS","birth4","1999","无"));
     }
 
     public class TimesArrayAdapter extends ArrayAdapter<Time>
@@ -88,16 +89,15 @@ public class MainActivity extends AppCompatActivity {
             LayoutInflater mInflater= LayoutInflater.from(this.getContext());
             View item = mInflater.inflate(this.resourceId,null);
 
+            ImageView pic=(ImageView)item.findViewById(R.id.image_view_pic);
             TextView remain_time = (TextView)item.findViewById(R.id.text_view_remain_time);
             TextView name = (TextView)item.findViewById(R.id.text_view_name);
             TextView date = (TextView)item.findViewById(R.id.text_view_date);
             TextView description = (TextView)item.findViewById(R.id.text_view_description);
 
             Time time_item = this.getItem(position);
+            pic.setImageResource(time_item.getPic_resource_id());
             remain_time.setText(time_item.getRemain_time());
-            Resources resources=getBaseContext().getResources();
-            Drawable drawable=resources.getDrawable(R.drawable.a1);
-            remain_time.setBackgroundDrawable(drawable);
             name.setText(time_item.getName());
             date.setText(time_item.getDate());
             description.setText(time_item.getDescription());
