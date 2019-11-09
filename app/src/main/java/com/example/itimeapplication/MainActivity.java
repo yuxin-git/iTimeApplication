@@ -6,16 +6,17 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.itimeapplication.data.model.Time;
@@ -28,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private TimesArrayAdapter theAdapter;
     ListView listViewTime;
     private Button buttonAdd;
+    private static final int REQUEST_CODE_NEW_TIME = 201;
+    private static final int REQUEST_CODE_UPDATE_TIME = 202;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +47,30 @@ public class MainActivity extends AppCompatActivity {
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(MainActivity.this, AddNewTimeActivity.class);
-                startActivityForResult(intent,1);
+                Intent intent=new Intent(MainActivity.this, EditTimeActivity.class);
+                startActivityForResult(intent,REQUEST_CODE_NEW_TIME);
+            }
+        });
+
+        //设置listview中item的点击事件，跳转至修改界面
+        listViewTime.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.i("点击了一个item ","1");
+                ImageView imageViewPic=view.findViewById(R.id.image_view_pic);
+                TextView textViewname=view.findViewById(R.id.text_view_name);
+                TextView textViewdate=view.findViewById(R.id.text_view_date);
+                TextView textViewdescription=view.findViewById(R.id.text_view_description);
+
+                Intent intent=new Intent(MainActivity.this, EditTimeActivity.class);
+                intent.putExtra("time_position",i);
+                intent.putExtra("time_name",textViewname.getText().toString().trim());
+                intent.putExtra("time_date",textViewdate.getText().toString().trim());
+                intent.putExtra("time_description",textViewdescription.getText().toString().trim());
+
+                startActivityForResult(intent,REQUEST_CODE_UPDATE_TIME);
+
+
             }
         });
 
@@ -56,14 +81,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==1) {
-            if (resultCode == 1) {
-                String name = data.getStringExtra("time_name");
-                String description = data.getStringExtra("time_description");
+        switch(requestCode)
+        {
+            case REQUEST_CODE_NEW_TIME:
+                if (resultCode == RESULT_OK) {
+                    String name = data.getStringExtra("time_name");
+                    String description = data.getStringExtra("time_description");
 
-                times.add(new Time(R.drawable.a1,"未知", name, "data", description));
-                theAdapter.notifyDataSetChanged();
-            }
+                    times.add(new Time(R.drawable.a1,"未知", name, "data", description));
+                    theAdapter.notifyDataSetChanged();
+                }
+            case REQUEST_CODE_UPDATE_TIME:
+                if (resultCode == RESULT_OK) {
+                    int position = data.getIntExtra("edit_position", 0);
+                    String name = data.getStringExtra("time_name");
+                    String description = data.getStringExtra("time_description");
+
+                    Time time = times.get(position);
+                    time.setName(name);
+                    time.setDescription(description);
+                    theAdapter.notifyDataSetChanged();
+                }
         }
 
     }

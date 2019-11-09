@@ -21,29 +21,33 @@ import com.example.itimeapplication.data.model.Condition;
 
 import java.util.ArrayList;
 
-public class AddNewTimeActivity extends AppCompatActivity {
+public class EditTimeActivity extends AppCompatActivity {
 
     private EditText editTextName,editTextDescription;
     private Button buttonBack,buttonOk;
 
     private ArrayList<Condition> conditions=new ArrayList<Condition>();
     private ConditionsArrayAdapter theConditionAdapter;
+    private int editPosition;
     ListView listViewCondition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_new_time);
+        setContentView(R.layout.activity_edit_time);
 
+        editPosition=getIntent().getIntExtra("time_position",0);
         editTextName=findViewById(R.id.edit_text_name);
+        editTextName.setText(getIntent().getStringExtra("time_name"));
         editTextDescription=findViewById(R.id.edit_text_description);
+        editTextDescription.setText(getIntent().getStringExtra("time_description"));
         buttonBack=findViewById(R.id.button_back);
         buttonOk=findViewById(R.id.button_ok);
 
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddNewTimeActivity.this.finish();
+                EditTimeActivity.this.finish();
             }
         });
 
@@ -52,11 +56,12 @@ public class AddNewTimeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent=new Intent();
                 //将要传递的值附加到Intent对象
+                intent.putExtra("edit_position",editPosition);
                 intent.putExtra("time_name",editTextName.getText().toString().trim());
                 intent.putExtra("time_description",editTextDescription.getText().toString().trim());
-                setResult(1,intent);
+                setResult(RESULT_OK,intent);
 
-                AddNewTimeActivity.this.finish();
+                EditTimeActivity.this.finish();
             }
         });
 
@@ -78,7 +83,7 @@ public class AddNewTimeActivity extends AppCompatActivity {
     public class ConditionsArrayAdapter extends ArrayAdapter<Condition>
     {
         private  int resourceId;
-        public ConditionsArrayAdapter(@NonNull AddNewTimeActivity context, @LayoutRes int resource, @NonNull ArrayList<Condition> objects) {
+        public ConditionsArrayAdapter(@NonNull EditTimeActivity context, @LayoutRes int resource, @NonNull ArrayList<Condition> objects) {
             super(context, resource, objects);
             resourceId=resource;
         }
