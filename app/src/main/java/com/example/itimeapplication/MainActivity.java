@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     ListView listViewTime;
     private Button buttonAdd;
     private static final int REQUEST_CODE_NEW_TIME = 201;
-    private static final int REQUEST_CODE_UPDATE_TIME = 202;
+    private static final int REQUEST_CODE_DETAILS = 203;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +62,13 @@ public class MainActivity extends AppCompatActivity {
                 TextView textViewdate=view.findViewById(R.id.text_view_date);
                 TextView textViewdescription=view.findViewById(R.id.text_view_description);
 
-                Intent intent=new Intent(MainActivity.this, EditTimeActivity.class);
+                Intent intent=new Intent(MainActivity.this, TimeDetailsActivity.class);
                 intent.putExtra("time_position",i);
                 intent.putExtra("time_name",textViewname.getText().toString().trim());
                 intent.putExtra("time_date",textViewdate.getText().toString().trim());
                 intent.putExtra("time_description",textViewdescription.getText().toString().trim());
 
-                startActivityForResult(intent,REQUEST_CODE_UPDATE_TIME);
+                startActivityForResult(intent,REQUEST_CODE_DETAILS);
 
 
             }
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                     times.add(new Time(R.drawable.a1,"未知", name, "data", description));
                     theAdapter.notifyDataSetChanged();
                 }
-            case REQUEST_CODE_UPDATE_TIME:
+            case REQUEST_CODE_DETAILS:
                 if (resultCode == RESULT_OK) {
                     int position = data.getIntExtra("edit_position", 0);
                     String name = data.getStringExtra("time_name");
