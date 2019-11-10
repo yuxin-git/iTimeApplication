@@ -8,15 +8,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.itimeapplication.data.model.Time;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class TimeDetailsActivity extends AppCompatActivity {
+public class EventDetailsActivity extends AppCompatActivity {
 
     private ImageView imageViewPicture;
     private TextView textViewName,textViewDate;
@@ -30,7 +27,7 @@ public class TimeDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         if (getSupportActionBar() != null)      //取消标题栏
             getSupportActionBar().hide();
-        setContentView(R.layout.activity_time_details);
+        setContentView(R.layout.activity_event_details);
 
         position = getIntent().getIntExtra("time_position", 0);
         imageViewPicture = findViewById(R.id.image_view_det_pic);
@@ -52,7 +49,7 @@ public class TimeDetailsActivity extends AppCompatActivity {
                 intent.putExtra("time_description",timeDescription);
                 setResult(RESULT_OK,intent);
 
-                TimeDetailsActivity.this.finish();
+                EventDetailsActivity.this.finish();
             }
         });
 
@@ -60,7 +57,7 @@ public class TimeDetailsActivity extends AppCompatActivity {
         fabEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(TimeDetailsActivity.this, EditTimeActivity.class);
+                Intent intent=new Intent(EventDetailsActivity.this, EditEventActivity.class);
                 intent.putExtra("time_name",textViewName.getText().toString().trim());
                 intent.putExtra("time_date",textViewDate.getText().toString().trim());
                 intent.putExtra("time_description",timeDescription);
@@ -73,7 +70,7 @@ public class TimeDetailsActivity extends AppCompatActivity {
         fabDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(TimeDetailsActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(EventDetailsActivity.this);
                 builder.setTitle("Do you want to delete this event?");
                 builder.setIcon(R.drawable.ic_warning);
                 //点击对话框以外的区域是否让对话框消失
@@ -82,7 +79,7 @@ public class TimeDetailsActivity extends AppCompatActivity {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent=new Intent(TimeDetailsActivity.this, MainActivity.class);
+                        Intent intent=new Intent(EventDetailsActivity.this, MainActivity.class);
                         intent.putExtra("delete_code",1);  //传递一个删除码
                         intent.putExtra("delete_position",position);  //将删除位置传递
                         startActivityForResult(intent,REQUEST_CODE_DELETE_TIME);

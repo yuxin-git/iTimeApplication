@@ -13,25 +13,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.itimeapplication.data.model.Time;
+import com.example.itimeapplication.data.model.Event;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayList<Time> times=new ArrayList<Time>();
+    private ArrayList<Event> events =new ArrayList<Event>();
     private TimesArrayAdapter theAdapter;
-    ListView listViewTime;
+    ListView listViewEvent;
 
-    private static final int REQUEST_CODE_NEW_TIME = 201;
+    private static final int REQUEST_CODE_NEW_EVENT = 201;
     private static final int REQUEST_CODE_DETAILS = 203;
     private FloatingActionButton fabAdd;
 
@@ -44,23 +42,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         InitData();
-        theAdapter=new TimesArrayAdapter(this,R.layout.list_item_time, times);
+        theAdapter=new TimesArrayAdapter(this,R.layout.list_item_event, events);
 
-        listViewTime= this.findViewById(R.id.list_view_time);
-        listViewTime.setAdapter(theAdapter);
+        listViewEvent= this.findViewById(R.id.list_view_time);
+        listViewEvent.setAdapter(theAdapter);
 
         //点击+按钮，跳转至EditTimeActivity新建一条数据
         fabAdd=findViewById(R.id.fab_add);
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(MainActivity.this, EditTimeActivity.class);
-                startActivityForResult(intent,REQUEST_CODE_NEW_TIME);
+                Intent intent=new Intent(MainActivity.this, EditEventActivity.class);
+                startActivityForResult(intent,REQUEST_CODE_NEW_EVENT);
             }
         });
 
         //设置listview中item的点击事件，详情界面
-        listViewTime.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listViewEvent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.i("点击了一个item ","1");
@@ -69,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 TextView textViewdate=view.findViewById(R.id.text_view_date);
                 TextView textViewdescription=view.findViewById(R.id.text_view_description);
 
-                Intent intent=new Intent(MainActivity.this, TimeDetailsActivity.class);
+                Intent intent=new Intent(MainActivity.this, EventDetailsActivity.class);
                 intent.putExtra("time_position",i);
                 intent.putExtra("time_name",textViewname.getText().toString().trim());
                 intent.putExtra("time_date",textViewdate.getText().toString().trim());
@@ -93,12 +91,12 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode)
         {
-            case REQUEST_CODE_NEW_TIME:
+            case REQUEST_CODE_NEW_EVENT:
                 if (resultCode == RESULT_OK) {
                     String name = data.getStringExtra("time_name");
                     String description = data.getStringExtra("time_description");
 
-                    times.add(new Time(R.drawable.a1,"未知", name, "data", description));
+                    events.add(new Event(R.drawable.a1,"未知", name, "data", description));
                     theAdapter.notifyDataSetChanged();
                 }
             case REQUEST_CODE_DETAILS:
@@ -107,9 +105,9 @@ public class MainActivity extends AppCompatActivity {
                     String name = data.getStringExtra("time_name");
                     String description = data.getStringExtra("time_description");
 
-                    Time time = times.get(position);
-                    time.setName(name);
-                    time.setDescription(description);
+                    Event event = events.get(position);
+                    event.setName(name);
+                    event.setDescription(description);
                     theAdapter.notifyDataSetChanged();
                 }
         }
@@ -118,23 +116,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void InitData()
     {
-        times.add(new Time(R.drawable.a1,"DAYS","Birthday1","2001","无"));
-        times.add(new Time(R.drawable.a1,"2DAYS","bir2","2003","无"));
-        times.add(new Time(R.drawable.a1,"ADAYS","birth4","1999","无"));
+        events.add(new Event(R.drawable.a1,"DAYS","Birthday1","2001","无"));
+        events.add(new Event(R.drawable.a1,"2DAYS","bir2","2003","无"));
+        events.add(new Event(R.drawable.a1,"ADAYS","birth4","1999","无"));
     }
 
     private void DeleteTime(int position)
     {
-        times.remove(position);
+        events.remove(position);
         theAdapter.notifyDataSetChanged();
         Toast.makeText(MainActivity.this, "删除成功！", Toast.LENGTH_SHORT).show();
         deleteCode=0;   //还原
     }
 
-    public class TimesArrayAdapter extends ArrayAdapter<Time>
+    public class TimesArrayAdapter extends ArrayAdapter<Event>
     {
         private  int resourceId;
-        public TimesArrayAdapter(@NonNull MainActivity context, @LayoutRes int resource, @NonNull ArrayList<Time> objects) {
+        public TimesArrayAdapter(@NonNull MainActivity context, @LayoutRes int resource, @NonNull ArrayList<Event> objects) {
             super(context, resource, objects);
             resourceId=resource;
         }
@@ -151,12 +149,12 @@ public class MainActivity extends AppCompatActivity {
             TextView date = (TextView)item.findViewById(R.id.text_view_date);
             TextView description = (TextView)item.findViewById(R.id.text_view_description);
 
-            Time time_item = this.getItem(position);
-            pic.setImageResource(time_item.getPic_resource_id());
-            remain_time.setText(time_item.getRemain_time());
-            name.setText(time_item.getName());
-            date.setText(time_item.getDate());
-            description.setText(time_item.getDescription());
+            Event event_item = this.getItem(position);
+            pic.setImageResource(event_item.getPic_resource_id());
+            remain_time.setText(event_item.getRemain_time());
+            name.setText(event_item.getName());
+            date.setText(event_item.getDate());
+            description.setText(event_item.getDescription());
 
 
             return item;

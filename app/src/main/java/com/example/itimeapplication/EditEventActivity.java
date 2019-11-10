@@ -13,27 +13,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.itimeapplication.data.model.Condition;
+import com.example.itimeapplication.data.model.OtherCondition;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
-public class EditTimeActivity extends AppCompatActivity {
+public class EditEventActivity extends AppCompatActivity {
 
     private EditText editTextName,editTextDescription;
     private FloatingActionButton fabBack,fabOk;
 
-    private ArrayList<Condition> conditions=new ArrayList<Condition>();
+    private ArrayList<OtherCondition> otherConditions=new ArrayList<OtherCondition>();
     private ConditionsArrayAdapter theConditionAdapter;
     private int editPosition;
     ListView listViewCondition;
@@ -45,7 +43,7 @@ public class EditTimeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         if (getSupportActionBar() != null)      //取消标题栏
             getSupportActionBar().hide();
-        setContentView(R.layout.activity_edit_time);
+        setContentView(R.layout.activity_edit_event);
 
         editPosition=getIntent().getIntExtra("time_position",0);
         editTextName=findViewById(R.id.edit_text_name);
@@ -58,7 +56,7 @@ public class EditTimeActivity extends AppCompatActivity {
         fabBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditTimeActivity.this.finish();
+                EditEventActivity.this.finish();
             }
         });
 
@@ -75,14 +73,14 @@ public class EditTimeActivity extends AppCompatActivity {
                     intent.putExtra("time_description",editTextDescription.getText().toString().trim());
                     setResult(RESULT_OK,intent);
 
-                    EditTimeActivity.this.finish();
+                    EditEventActivity.this.finish();
                 }
 
             }
         });
 
         InitData();
-        theConditionAdapter=new ConditionsArrayAdapter(this,R.layout.list_item_extra_condition, conditions);
+        theConditionAdapter=new ConditionsArrayAdapter(this,R.layout.list_item_extra_condition, otherConditions);
 
         listViewCondition= this.findViewById(R.id.list_view_conditions);
         listViewCondition.setAdapter(theConditionAdapter);
@@ -97,7 +95,7 @@ public class EditTimeActivity extends AppCompatActivity {
                 }
                 if(i==1){  //选择周期
                     String[] repeat = new String[]{"Weak","Month","Year","Custom"};
-                    AlertDialog.Builder builder = new AlertDialog.Builder(EditTimeActivity.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(EditEventActivity.this);
                     builder.setTitle("Repeat");
                     builder.setItems(repeat, new DialogInterface.OnClickListener() {
                         @Override
@@ -131,16 +129,16 @@ public class EditTimeActivity extends AppCompatActivity {
 
     private void InitData()
     {
-        conditions.add(new Condition(R.drawable.clock,"Date","Long press to use Date Calculator"));
-        conditions.add(new Condition(R.drawable.repeat,"Repeat","None"));
-        conditions.add(new Condition(R.drawable.picture,"Picture",""));
-        conditions.add(new Condition(R.drawable.label,"Add Label",""));
+        otherConditions.add(new OtherCondition(R.drawable.clock,"Date","Long press to use Date Calculator"));
+        otherConditions.add(new OtherCondition(R.drawable.repeat,"Repeat","None"));
+        otherConditions.add(new OtherCondition(R.drawable.picture,"Picture",""));
+        otherConditions.add(new OtherCondition(R.drawable.label,"Add Label",""));
     }
 
-    public class ConditionsArrayAdapter extends ArrayAdapter<Condition>
+    public class ConditionsArrayAdapter extends ArrayAdapter<OtherCondition>
     {
         private  int resourceId;
-        public ConditionsArrayAdapter(@NonNull EditTimeActivity context, @LayoutRes int resource, @NonNull ArrayList<Condition> objects) {
+        public ConditionsArrayAdapter(@NonNull EditEventActivity context, @LayoutRes int resource, @NonNull ArrayList<OtherCondition> objects) {
             super(context, resource, objects);
             resourceId=resource;
         }
@@ -156,7 +154,7 @@ public class EditTimeActivity extends AppCompatActivity {
             TextView explain = (TextView)item.findViewById(R.id.text_view_explain);
 
 
-            Condition condition_item = this.getItem(position);
+            OtherCondition condition_item = this.getItem(position);
             con_pic.setImageResource(condition_item.getCon_picture());
             con_name.setText(condition_item.getCon_name());
             explain.setText(condition_item.getCon_explain());

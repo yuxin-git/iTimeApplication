@@ -1,6 +1,6 @@
 package com.example.itimeapplication.data.model;
 
-public class Time {
+public class Event {
 
     private int pic_resource_id;
     private String remain_time;
@@ -8,7 +8,7 @@ public class Time {
     private String date;
     private String description;
 
-    public Time(int pic_resource_id,String remain_time, String name, String date,String description) {
+    public Event(int pic_resource_id, String remain_time, String name, String date, String description) {
         this.pic_resource_id = pic_resource_id;
         this.remain_time = remain_time;
         this.name = name;

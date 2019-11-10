@@ -9,8 +9,8 @@
         android:roundIcon="@drawable/clock"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TimeDetailsActivity"></activity>
-        <activity android:name=".EditTimeActivity" />
+        <activity android:name=".EventDetailsActivity"></activity>
+        <activity android:name=".EditEventActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
