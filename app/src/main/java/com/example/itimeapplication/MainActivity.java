@@ -20,6 +20,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.itimeapplication.data.model.Time;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -28,9 +29,10 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Time> times=new ArrayList<Time>();
     private TimesArrayAdapter theAdapter;
     ListView listViewTime;
-    private Button buttonAdd;
+
     private static final int REQUEST_CODE_NEW_TIME = 201;
     private static final int REQUEST_CODE_DETAILS = 203;
+    private FloatingActionButton fabAdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,15 +44,17 @@ public class MainActivity extends AppCompatActivity {
 
         listViewTime= this.findViewById(R.id.list_view_time);
         listViewTime.setAdapter(theAdapter);
-        buttonAdd=findViewById(R.id.button_add);
 
-        buttonAdd.setOnClickListener(new View.OnClickListener() {
+        fabAdd=findViewById(R.id.fab_add);
+        fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(MainActivity.this, EditTimeActivity.class);
                 startActivityForResult(intent,REQUEST_CODE_NEW_TIME);
             }
         });
+
+
 
         //设置listview中item的点击事件，跳转至修改界面
         listViewTime.setOnItemClickListener(new AdapterView.OnItemClickListener() {

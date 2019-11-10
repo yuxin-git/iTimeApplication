@@ -9,7 +9,7 @@
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="fill_parent"
-        android:layout_height="240dp"
+        android:layout_height="200dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -19,6 +19,49 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:srcCompat="@drawable/a1" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_det_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:clickable="true"
+            app:backgroundTint="#BEBEBE"
+            app:elevation="50dp"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/ic_back_white"
+            tools:ignore="VectorDrawableCompat" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_det_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="55dp"
+            android:layout_marginTop="10dp"
+            android:clickable="true"
+            app:backgroundTint="#BEBEBE"
+            app:elevation="50dp"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/ic_delete_white"
+            tools:ignore="VectorDrawableCompat" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_det_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:clickable="true"
+            app:backgroundTint="#BEBEBE"
+            app:elevation="50dp"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/ic_edit_white"
+            tools:ignore="VectorDrawableCompat" />
     </FrameLayout>
 
     <ImageView
@@ -70,24 +113,6 @@
         android:text="TextView"
         app:layout_constraintStart_toEndOf="@+id/image_view_det_remain"
         app:layout_constraintTop_toBottomOf="@+id/text_view_det_remain_time" />
-
-    <Button
-        android:id="@+id/button_det_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:text="Back"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/button_det_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:text="Edit"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button_det_back" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

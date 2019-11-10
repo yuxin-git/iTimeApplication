@@ -10,21 +10,24 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.itimeapplication.data.model.Condition;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
 public class EditTimeActivity extends AppCompatActivity {
 
     private EditText editTextName,editTextDescription;
-    private Button buttonBack,buttonOk;
+    private FloatingActionButton fabBack,fabOk;
 
     private ArrayList<Condition> conditions=new ArrayList<Condition>();
     private ConditionsArrayAdapter theConditionAdapter;
@@ -34,6 +37,8 @@ public class EditTimeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getSupportActionBar() != null)      //取消标题栏
+            getSupportActionBar().hide();
         setContentView(R.layout.activity_edit_time);
 
         editPosition=getIntent().getIntExtra("time_position",0);
@@ -41,27 +46,32 @@ public class EditTimeActivity extends AppCompatActivity {
         editTextName.setText(getIntent().getStringExtra("time_name"));
         editTextDescription=findViewById(R.id.edit_text_description);
         editTextDescription.setText(getIntent().getStringExtra("time_description"));
-        buttonBack=findViewById(R.id.button_back);
-        buttonOk=findViewById(R.id.button_ok);
+        fabBack=findViewById(R.id.fab_edit_back);
+        fabOk=findViewById(R.id.fab_edit_ok);
 
-        buttonBack.setOnClickListener(new View.OnClickListener() {
+        fabBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 EditTimeActivity.this.finish();
             }
         });
 
-        buttonOk.setOnClickListener(new View.OnClickListener() {
+        fabOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent();
-                //将要传递的值附加到Intent对象
-                intent.putExtra("edit_position",editPosition);
-                intent.putExtra("time_name",editTextName.getText().toString().trim());
-                intent.putExtra("time_description",editTextDescription.getText().toString().trim());
-                setResult(RESULT_OK,intent);
+                if(editTextName.getText().toString().isEmpty())     //如果未输入name
+                    Toast.makeText(getApplicationContext(), "You did not enter an event name!", Toast.LENGTH_LONG).show();
+                else{
+                    Intent intent=new Intent();
+                    //将要传递的值附加到Intent对象
+                    intent.putExtra("edit_position",editPosition);
+                    intent.putExtra("time_name",editTextName.getText().toString().trim());
+                    intent.putExtra("time_description",editTextDescription.getText().toString().trim());
+                    setResult(RESULT_OK,intent);
 
-                EditTimeActivity.this.finish();
+                    EditTimeActivity.this.finish();
+                }
+
             }
         });
 
@@ -74,10 +84,10 @@ public class EditTimeActivity extends AppCompatActivity {
 
     private void InitData()
     {
-        conditions.add(new Condition(R.drawable.con1,"    Date","       Long press to use Date Calculator"));
-        conditions.add(new Condition(R.drawable.con2,"    Repeat","       None"));
-        conditions.add(new Condition(R.drawable.con3,"    Picture",""));
-        conditions.add(new Condition(R.drawable.con4,"    Add Label",""));
+        conditions.add(new Condition(R.drawable.clock,"Date","Long press to use Date Calculator"));
+        conditions.add(new Condition(R.drawable.repeat,"Repeat","None"));
+        conditions.add(new Condition(R.drawable.picture,"Picture",""));
+        conditions.add(new Condition(R.drawable.label,"Add Label",""));
     }
 
     public class ConditionsArrayAdapter extends ArrayAdapter<Condition>

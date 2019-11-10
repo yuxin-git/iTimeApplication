@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.itimeapplication.data.model.Time;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class TimeDetailsActivity extends AppCompatActivity {
 
@@ -19,11 +20,13 @@ public class TimeDetailsActivity extends AppCompatActivity {
     private TextView textViewName,textViewDate;
     private String timeDescription;
     private int position;
-    private Button buttonBack,buttonEdit;
+    private FloatingActionButton fabBack,fabEdit,fabDelete;
     private static final int REQUEST_CODE_UPDATE_TIME = 202;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getSupportActionBar() != null)      //取消标题栏
+            getSupportActionBar().hide();
         setContentView(R.layout.activity_time_details);
 
         position = getIntent().getIntExtra("time_position", 0);
@@ -35,8 +38,8 @@ public class TimeDetailsActivity extends AppCompatActivity {
         timeDescription=getIntent().getStringExtra("time_description");
 
 
-        buttonBack = findViewById(R.id.button_det_back);
-        buttonBack.setOnClickListener(new View.OnClickListener() {
+        fabBack = findViewById(R.id.fab_det_back);
+        fabBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent();
@@ -50,8 +53,8 @@ public class TimeDetailsActivity extends AppCompatActivity {
             }
         });
 
-        buttonEdit=findViewById(R.id.button_det_edit);
-        buttonEdit.setOnClickListener(new View.OnClickListener() {
+        fabEdit=findViewById(R.id.fab_det_edit);
+        fabEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(TimeDetailsActivity.this, EditTimeActivity.class);
