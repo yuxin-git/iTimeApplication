@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         listViewEvent= this.findViewById(R.id.list_view_time);
         listViewEvent.setAdapter(theAdapter);
+        listViewEvent.setDivider(null);     //取消listview中item间的边框
 
         //点击+按钮，跳转至EditTimeActivity新建一条数据
         fabAdd=findViewById(R.id.fab_add);
