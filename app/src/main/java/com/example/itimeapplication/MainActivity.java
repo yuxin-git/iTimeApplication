@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         listViewTime= this.findViewById(R.id.list_view_time);
         listViewTime.setAdapter(theAdapter);
 
+        //点击+按钮，跳转至EditTimeActivity新建一条数据
         fabAdd=findViewById(R.id.fab_add);
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        //设置listview中item的点击事件，跳转至修改界面
+        //设置listview中item的点击事件，详情界面
         listViewTime.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

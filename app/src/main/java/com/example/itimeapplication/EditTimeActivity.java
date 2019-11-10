@@ -3,14 +3,18 @@ package com.example.itimeapplication;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,6 +37,8 @@ public class EditTimeActivity extends AppCompatActivity {
     private ConditionsArrayAdapter theConditionAdapter;
     private int editPosition;
     ListView listViewCondition;
+
+    private int repeat_day;     //保存周期的天数
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +86,47 @@ public class EditTimeActivity extends AppCompatActivity {
 
         listViewCondition= this.findViewById(R.id.list_view_conditions);
         listViewCondition.setAdapter(theConditionAdapter);
+
+        listViewCondition.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String m= String.valueOf(i);    //调试使用
+                Log.i("点击了一个item ", m);
+                if(i==0){       //选择日期
+                    //待实现，需要自定义一个AlertDialog
+                }
+                if(i==1){  //选择周期
+                    String[] repeat = new String[]{"Weak","Month","Year","Custom"};
+                    AlertDialog.Builder builder = new AlertDialog.Builder(EditTimeActivity.this);
+                    builder.setTitle("Repeat");
+                    builder.setItems(repeat, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String msg=String.valueOf(which);   //调试
+                            Log.i("点击了周期: ", msg);
+                            if(which==0)    //week
+                                repeat_day=7;
+                            if(which==1)    //month
+                                repeat_day=30;
+                            if(which==2)    //year
+                                repeat_day=365;
+                            if(which==3)    //自定义天数，再创建一个AlertDialog   ！！！！！！！！！待实现
+                            {
+                                //待实现！！！！！！！！
+
+                            }
+                        }
+                    });
+                    builder.create().show();
+                }
+                if(i==2){   //选择图片
+
+                }
+                if(i==3){   //添加标签
+
+                }
+            }
+        });
     }
 
     private void InitData()
