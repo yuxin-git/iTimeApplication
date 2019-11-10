@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.itimeapplication.data.model.Time;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -34,7 +35,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_DETAILS = 203;
     private FloatingActionButton fabAdd;
 
-    @Override
+    private int deleteCode=0; //控制删除操作，为1则执行删除操作，否则不执行
+    private int deleteItemPosition;
+
+   @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -55,8 +59,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
         //设置listview中item的点击事件，详情界面
         listViewTime.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -74,10 +76,13 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("time_description",textViewdescription.getText().toString().trim());
 
                 startActivityForResult(intent,REQUEST_CODE_DETAILS);
-
-
             }
         });
+
+        deleteCode=getIntent().getIntExtra("delete_code",0);
+        deleteItemPosition=getIntent().getIntExtra("delete_position",0);
+        if(deleteCode==1)   //执行删除操作
+            DeleteTime(deleteItemPosition); //自定义删除操作函数
 
 
 
@@ -116,6 +121,14 @@ public class MainActivity extends AppCompatActivity {
         times.add(new Time(R.drawable.a1,"DAYS","Birthday1","2001","无"));
         times.add(new Time(R.drawable.a1,"2DAYS","bir2","2003","无"));
         times.add(new Time(R.drawable.a1,"ADAYS","birth4","1999","无"));
+    }
+
+    private void DeleteTime(int position)
+    {
+        times.remove(position);
+        theAdapter.notifyDataSetChanged();
+        Toast.makeText(MainActivity.this, "删除成功！", Toast.LENGTH_SHORT).show();
+        deleteCode=0;   //还原
     }
 
     public class TimesArrayAdapter extends ArrayAdapter<Time>

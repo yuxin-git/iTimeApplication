@@ -1,8 +1,10 @@
 package com.example.itimeapplication;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -22,6 +24,7 @@ public class TimeDetailsActivity extends AppCompatActivity {
     private int position;
     private FloatingActionButton fabBack,fabEdit,fabDelete;
     private static final int REQUEST_CODE_UPDATE_TIME = 202;
+    private static final int REQUEST_CODE_DELETE_TIME = 204;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +41,7 @@ public class TimeDetailsActivity extends AppCompatActivity {
         timeDescription=getIntent().getStringExtra("time_description");
 
 
-        fabBack = findViewById(R.id.fab_det_back);
+        fabBack = findViewById(R.id.fab_det_back);    //返回按钮
         fabBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -53,7 +56,7 @@ public class TimeDetailsActivity extends AppCompatActivity {
             }
         });
 
-        fabEdit=findViewById(R.id.fab_det_edit);
+        fabEdit=findViewById(R.id.fab_det_edit);    //编辑按钮
         fabEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,6 +66,36 @@ public class TimeDetailsActivity extends AppCompatActivity {
                 intent.putExtra("time_description",timeDescription);
 
                 startActivityForResult(intent,REQUEST_CODE_UPDATE_TIME);
+            }
+        });
+
+        fabDelete=findViewById(R.id.fab_det_delete);    //删除按钮
+        fabDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(TimeDetailsActivity.this);
+                builder.setTitle("Do you want to delete this event?");
+                builder.setIcon(R.drawable.ic_warning);
+                //点击对话框以外的区域是否让对话框消失
+                builder.setCancelable(true);
+                //设置正面按钮
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent=new Intent(TimeDetailsActivity.this, MainActivity.class);
+                        intent.putExtra("delete_code",1);  //传递一个删除码
+                        intent.putExtra("delete_position",position);  //将删除位置传递
+                        startActivityForResult(intent,REQUEST_CODE_DELETE_TIME);
+                    }
+                });
+                //设置反面按钮
+                builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                builder.create().show();
+
             }
         });
     }
