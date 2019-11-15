@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -94,7 +95,7 @@ public class EditEventActivity extends AppCompatActivity {
                     //待实现，需要自定义一个AlertDialog
                 }
                 if(i==1){  //选择周期
-                    String[] repeat = new String[]{"Weak","Month","Year","Custom"};
+                    String[] repeat = new String[]{"Weak","Month","Year","Custom","None"};
                     AlertDialog.Builder builder = new AlertDialog.Builder(EditEventActivity.this);
                     builder.setTitle("Repeat");
                     builder.setItems(repeat, new DialogInterface.OnClickListener() {
@@ -108,9 +109,26 @@ public class EditEventActivity extends AppCompatActivity {
                                 repeat_day=30;
                             if(which==2)    //year
                                 repeat_day=365;
-                            if(which==3)    //自定义天数，再创建一个AlertDialog   ！！！！！！！！！待实现
+                            if(which==3)    //自定义天数，再创建一个AlertDialog
                             {
-                                //待实现！！！！！！！！
+                                final EditText et = new EditText(EditEventActivity.this);
+                                et.setHint("enter Period(days)");
+                                et.setInputType(InputType.TYPE_CLASS_NUMBER);   //设置输入文本框数据为数字
+                                new AlertDialog.Builder(EditEventActivity.this).setTitle("Reapeat")
+                                        .setView(et)
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                String input = et.getText().toString();
+                                                if (input.equals("")) {
+                                                    Toast.makeText(getApplicationContext(), "Input can't be empty！", Toast.LENGTH_LONG).show();
+                                                }
+                                                else {
+                                                    repeat_day= Integer.parseInt(input);    //将String转化为int
+                                                }
+                                            }
+                                        })
+                                        .setNegativeButton("CANCEL", null)
+                                        .show();
 
                             }
                         }

@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         deleteCode=getIntent().getIntExtra("delete_code",0);
         deleteItemPosition=getIntent().getIntExtra("delete_position",0);
         if(deleteCode==1)   //执行删除操作
-            DeleteTime(deleteItemPosition); //自定义删除操作函数
+            DeleteEvent(deleteItemPosition); //自定义删除操作函数
 
 
 
@@ -122,11 +122,11 @@ public class MainActivity extends AppCompatActivity {
         events.add(new Event(R.drawable.a1,"ADAYS","birth4","1999","无"));
     }
 
-    private void DeleteTime(int position)
+    private void DeleteEvent(int position)
     {
         events.remove(position);
         theAdapter.notifyDataSetChanged();
-        Toast.makeText(MainActivity.this, "删除成功！", Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, "delete successfully！", Toast.LENGTH_SHORT).show();
         deleteCode=0;   //还原
     }
 

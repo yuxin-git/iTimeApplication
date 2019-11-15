@@ -20,8 +20,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     private String timeDescription;
     private int position;
     private FloatingActionButton fabBack,fabEdit,fabDelete;
-    private static final int REQUEST_CODE_UPDATE_TIME = 202;
-    private static final int REQUEST_CODE_DELETE_TIME = 204;
+    private static final int REQUEST_CODE_UPDATE_EVENT= 202;
+    private static final int REQUEST_CODE_DELETE_EVENT = 204;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +62,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                 intent.putExtra("time_date",textViewDate.getText().toString().trim());
                 intent.putExtra("time_description",timeDescription);
 
-                startActivityForResult(intent,REQUEST_CODE_UPDATE_TIME);
+                startActivityForResult(intent,REQUEST_CODE_UPDATE_EVENT);
             }
         });
 
@@ -82,7 +82,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                         Intent intent=new Intent(EventDetailsActivity.this, MainActivity.class);
                         intent.putExtra("delete_code",1);  //传递一个删除码
                         intent.putExtra("delete_position",position);  //将删除位置传递
-                        startActivityForResult(intent,REQUEST_CODE_DELETE_TIME);
+                        startActivityForResult(intent,REQUEST_CODE_DELETE_EVENT);
                     }
                 });
                 //设置反面按钮
@@ -99,7 +99,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_UPDATE_TIME) {
+        if (requestCode == REQUEST_CODE_UPDATE_EVENT) {
             if (resultCode == RESULT_OK) {
                 String name = data.getStringExtra("time_name");
 
