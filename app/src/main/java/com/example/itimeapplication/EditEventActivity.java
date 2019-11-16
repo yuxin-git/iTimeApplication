@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.itimeapplication.data.model.EventDate;
 import com.example.itimeapplication.data.model.OtherCondition;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -45,11 +47,13 @@ public class EditEventActivity extends AppCompatActivity {
     private ConditionsArrayAdapter theConditionAdapter;
     private int editPosition;
     ListView listViewCondition;
+    String condition_explain;
 
     private int repeat_day;     //保存周期的天数
     private DatePickerDialog datePickerDialog;
     private TimePickerDialog timePickerDialog;
     private Calendar calendar;
+    private EventDate mDate;
     private int mYear,mMonth,mDay,mHour,mMinute;
 
     @Override
@@ -58,6 +62,12 @@ public class EditEventActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)      //取消标题栏
             getSupportActionBar().hide();
         setContentView(R.layout.activity_edit_event);
+
+        //获取当前时间,并将mDate初始化为当前时间
+        calendar = Calendar.getInstance();
+        mDate=new EventDate(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH),
+                calendar.get(Calendar.HOUR),calendar.get(Calendar.MINUTE),calendar.get(Calendar.SECOND));
+
 
         editPosition=getIntent().getIntExtra("time_position",0);
         editTextName=findViewById(R.id.edit_text_name);
@@ -93,12 +103,26 @@ public class EditEventActivity extends AppCompatActivity {
             }
         });
 
+        condition_explain="Long press to use Date Calculator";
         InitData();
         theConditionAdapter=new ConditionsArrayAdapter(this,R.layout.list_item_extra_condition, otherConditions);
 
         listViewCondition= this.findViewById(R.id.list_view_conditions);
         listViewCondition.setAdapter(theConditionAdapter);
 
+        //ListView中item的长按事件，只需实现Date的
+        listViewCondition.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(i==0) {
+                    Log.i("长按", "Date"); //日志
+                    showDateCalculator();
+                }
+                return true;
+            }
+        });
+
+        //ListView中各item的点击事件
         listViewCondition.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -109,47 +133,7 @@ public class EditEventActivity extends AppCompatActivity {
                     showDailog();
                 }
                 if(i==1){  //选择周期
-                    String[] repeat = new String[]{"Weak","Month","Year","Custom","None"};
-                    AlertDialog.Builder builder = new AlertDialog.Builder(EditEventActivity.this);
-                    builder.setTitle("Repeat");
-                    builder.setItems(repeat, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String msg=String.valueOf(which);   //调试
-                            Log.i("点击了周期: ", msg);
-                            if(which==0)    //week
-                                repeat_day=7;
-                            if(which==1)    //month
-                                repeat_day=30;
-                            if(which==2)    //year
-                                repeat_day=365;
-                            if(which==3)    //自定义天数，再创建一个AlertDialog
-                            {
-                                final EditText et = new EditText(EditEventActivity.this);
-                                et.setHint("enter Period(days)");
-                                et.setInputType(InputType.TYPE_CLASS_NUMBER);   //设置输入文本框数据为数字
-                                new AlertDialog.Builder(EditEventActivity.this).setTitle("Reapeat")
-                                        .setView(et)
-                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                String input = et.getText().toString();
-                                                if (input.equals("")) {
-                                                    Toast.makeText(getApplicationContext(), "Input can't be empty！", Toast.LENGTH_LONG).show();
-                                                }
-                                                else {
-                                                    repeat_day= Integer.parseInt(input);    //将String转化为int
-                                                }
-                                            }
-                                        })
-                                        .setNegativeButton("CANCEL", null)
-                                        .show();
-
-                            }
-                            if(which==4)    //不重复
-                                repeat_day=0;
-                        }
-                    });
-                    builder.create().show();
+                    showRepeat();
                 }
                 if(i==2){   //选择图片
 
@@ -164,7 +148,7 @@ public class EditEventActivity extends AppCompatActivity {
 
     private void InitData()
     {
-        otherConditions.add(new OtherCondition(R.drawable.clock,"Date","Long press to use Date Calculator"));
+        otherConditions.add(new OtherCondition(R.drawable.clock,"Date",condition_explain));
         otherConditions.add(new OtherCondition(R.drawable.repeat,"Repeat","None"));
         otherConditions.add(new OtherCondition(R.drawable.picture,"Picture",""));
         otherConditions.add(new OtherCondition(R.drawable.label,"Add Label",""));
@@ -183,9 +167,15 @@ public class EditEventActivity extends AppCompatActivity {
                 Log.d("测试：year", Integer.toString(year));
                 Log.d("测试：month", Integer.toString(month));
                 Log.d("测试：day", Integer.toString(day));
-                mYear=year;
-                mMonth=month;
-                mDay=day;
+                mDate.setYear(year);
+                mDate.setMonth(month);
+                mDate.setDay(day);
+
+                //修改详情界面Date的描述
+                condition_explain=mDate.display_date();
+                otherConditions.set(0,new OtherCondition(R.drawable.clock,"Date",condition_explain));
+                theConditionAdapter.notifyDataSetChanged();
+
                 showTime();  //继续设置时间
             }
         });
@@ -204,17 +194,24 @@ public class EditEventActivity extends AppCompatActivity {
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 Log.d("测试：hour", Integer.toString(hourOfDay));
                 Log.d("测试：minite", Integer.toString(minute));
-                mHour=hourOfDay;
-                mMinute=minute;
+                mDate.setHour(hourOfDay);
+                mDate.setMinute(minute);
+
+                //修改详情界面Date的描述
+                condition_explain = mDate.display_date_and_time();
+                otherConditions.set(0, new OtherCondition(R.drawable.clock, "Date", condition_explain));
+                theConditionAdapter.notifyDataSetChanged();
+
             }
         },
                 calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
-        datePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",new DialogInterface.OnClickListener() {
+        timePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
             }
         });
-        datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "CANCEL",new DialogInterface.OnClickListener() {
+        timePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "CANCEL",new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
             }
@@ -223,6 +220,98 @@ public class EditEventActivity extends AppCompatActivity {
         timePickerDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
+    private void showDateCalculator()
+    {
+        final View alertDialogView = getLayoutInflater ().inflate (R.layout.alertdialog_calendar_layout, null, false);
+        AlertDialog.Builder inputDayAlertDialog = new AlertDialog.Builder (EditEventActivity.this);
+        inputDayAlertDialog.setView (alertDialogView);
+
+        EditText editTextAfter=alertDialogView.findViewById(R.id.edit_text_after);
+        EditText editTextBefore=alertDialogView.findViewById(R.id.edit_text_before);
+        int value=Integer.parseInt(editTextAfter.getText().toString());
+
+        TextView textViewCalendar=alertDialogView.findViewById(R.id.text_view_calendar);
+        textViewCalendar.setText(mDate.display_date());
+        TextView textViewAfter=alertDialogView.findViewById(R.id.text_view_after);
+        textViewAfter.setText("days after: "+mDate.display_date());
+        TextView textViewBefore=alertDialogView.findViewById(R.id.text_view_before);
+        textViewBefore.setText("days before: "+mDate.display_date());
+
+
+        Button buttonAfterPick;
+        buttonAfterPick=alertDialogView.findViewById(R.id.button_after);
+        buttonAfterPick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+            }
+        });
+        Button buttonBeforePick;
+        buttonBeforePick=alertDialogView.findViewById(R.id.button_before);
+        buttonBeforePick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        inputDayAlertDialog.setNegativeButton ("CANCEL", new DialogInterface.OnClickListener () {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Toast.makeText(getApplicationContext(), "CANCEL！", Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+        inputDayAlertDialog.show ();
+
+    }
+
+    private void showRepeat()
+    {
+        String[] repeat = new String[]{"Weak","Month","Year","Custom","None"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditEventActivity.this);
+        builder.setTitle("Repeat");
+        builder.setItems(repeat, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String msg=String.valueOf(which);   //调试
+                Log.i("点击了周期: ", msg);
+                if(which==0)    //week
+                    repeat_day=7;
+                if(which==1)    //month
+                    repeat_day=30;
+                if(which==2)    //year
+                    repeat_day=365;
+                if(which==3)    //自定义天数，再创建一个AlertDialog
+                {
+                    final EditText et = new EditText(EditEventActivity.this);
+                    et.setHint("enter Period(days)");
+                    et.setInputType(InputType.TYPE_CLASS_NUMBER);   //设置输入文本框数据为数字
+                    new AlertDialog.Builder(EditEventActivity.this).setTitle("Reapeat")
+                            .setView(et)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    String input = et.getText().toString();
+                                    if (input.equals("")) {
+                                        Toast.makeText(getApplicationContext(), "Input can't be empty！", Toast.LENGTH_LONG).show();
+                                    }
+                                    else {
+                                        repeat_day= Integer.parseInt(input);    //将String转化为int
+                                    }
+                                }
+                            })
+                            .setNegativeButton("CANCEL", null)
+                            .show();
+
+                }
+                if(which==4)    //不重复
+                    repeat_day=0;
+            }
+        });
+        builder.create().show();
+    }
 
 
     public class ConditionsArrayAdapter extends ArrayAdapter<OtherCondition>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <FrameLayout
+    android:id="@+id/frameLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="100dp"
+    android:background="@color/colorPrimary">
+
+    <ImageView
+        android:id="@+id/image_view_tip"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_keyboard"
+         />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_calendar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
+        <ImageView
+            android:id="@+id/image_view_calendar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_today"
+        />
+        <TextView
+            android:id="@+id/text_view_calendar"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="27dp"
+            android:layout_marginTop="15dp"
+            android:textColor="@color/black"
+            android:textSize="18dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
+        <EditText
+            android:id="@+id/edit_text_after"
+            android:layout_width="45dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"/>
+        <TextView
+            android:id="@+id/text_view_after"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/black"/>
+
+        <Button
+            android:id="@+id/button_after"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:background="#00FFFFFF"
+            android:text="Pick"
+            android:textColor="@color/blue" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
+        <EditText
+            android:id="@+id/edit_text_before"
+            android:layout_width="45dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"/>
+        <TextView
+            android:id="@+id/text_view_before"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/black"/>
+
+        <Button
+            android:id="@+id/button_before"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:background="#00FFFFFF"
+            android:textColor="@color/blue"
+            android:text="Pick" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
