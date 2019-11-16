@@ -228,7 +228,7 @@ public class EditEventActivity extends AppCompatActivity {
 
         EditText editTextAfter=alertDialogView.findViewById(R.id.edit_text_after);
         EditText editTextBefore=alertDialogView.findViewById(R.id.edit_text_before);
-        int value=Integer.parseInt(editTextAfter.getText().toString());
+        int valueAfter=Integer.parseInt(editTextAfter.getText().toString());
 
         TextView textViewCalendar=alertDialogView.findViewById(R.id.text_view_calendar);
         textViewCalendar.setText(mDate.display_date());
