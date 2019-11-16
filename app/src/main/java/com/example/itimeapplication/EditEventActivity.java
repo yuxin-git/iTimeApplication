@@ -47,7 +47,8 @@ public class EditEventActivity extends AppCompatActivity {
     private ConditionsArrayAdapter theConditionAdapter;
     private int editPosition;
     ListView listViewCondition;
-    String condition_explain;
+    String condition_date_explain;
+    String condition_repeat_explain;
 
     private int repeat_day;     //保存周期的天数
     private DatePickerDialog datePickerDialog;
@@ -103,7 +104,8 @@ public class EditEventActivity extends AppCompatActivity {
             }
         });
 
-        condition_explain="Long press to use Date Calculator";
+        condition_date_explain="Long press to use Date Calculator";
+        condition_repeat_explain="None";
         InitData();
         theConditionAdapter=new ConditionsArrayAdapter(this,R.layout.list_item_extra_condition, otherConditions);
 
@@ -148,8 +150,8 @@ public class EditEventActivity extends AppCompatActivity {
 
     private void InitData()
     {
-        otherConditions.add(new OtherCondition(R.drawable.clock,"Date",condition_explain));
-        otherConditions.add(new OtherCondition(R.drawable.repeat,"Repeat","None"));
+        otherConditions.add(new OtherCondition(R.drawable.clock,"Date",condition_date_explain));
+        otherConditions.add(new OtherCondition(R.drawable.repeat,"Repeat",condition_repeat_explain));
         otherConditions.add(new OtherCondition(R.drawable.picture,"Picture",""));
         otherConditions.add(new OtherCondition(R.drawable.label,"Add Label",""));
     }
@@ -172,8 +174,8 @@ public class EditEventActivity extends AppCompatActivity {
                 mDate.setDay(day);
 
                 //修改详情界面Date的描述
-                condition_explain=mDate.display_date();
-                otherConditions.set(0,new OtherCondition(R.drawable.clock,"Date",condition_explain));
+                condition_date_explain=mDate.display_date();
+                otherConditions.set(0,new OtherCondition(R.drawable.clock,"Date",condition_date_explain));
                 theConditionAdapter.notifyDataSetChanged();
 
                 showTime();  //继续设置时间
@@ -198,8 +200,8 @@ public class EditEventActivity extends AppCompatActivity {
                 mDate.setMinute(minute);
 
                 //修改详情界面Date的描述
-                condition_explain = mDate.display_date_and_time();
-                otherConditions.set(0, new OtherCondition(R.drawable.clock, "Date", condition_explain));
+                condition_date_explain = mDate.display_date_and_time();
+                otherConditions.set(0, new OtherCondition(R.drawable.clock, "Date", condition_date_explain));
                 theConditionAdapter.notifyDataSetChanged();
 
             }
@@ -278,12 +280,24 @@ public class EditEventActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 String msg=String.valueOf(which);   //调试
                 Log.i("点击了周期: ", msg);
-                if(which==0)    //week
-                    repeat_day=7;
-                if(which==1)    //month
-                    repeat_day=30;
-                if(which==2)    //year
-                    repeat_day=365;
+                if(which==0) {    //week
+                    repeat_day = 7;
+                    condition_repeat_explain="Week";
+                    otherConditions.set(1,new OtherCondition(R.drawable.repeat,"Repeat",condition_repeat_explain));
+                    theConditionAdapter.notifyDataSetChanged();
+                }
+                if(which==1) {    //month
+                    repeat_day = 30;
+                    condition_repeat_explain="Month";
+                    otherConditions.set(1,new OtherCondition(R.drawable.repeat,"Repeat",condition_repeat_explain));
+                    theConditionAdapter.notifyDataSetChanged();
+                }
+                if(which==2) {    //year
+                    repeat_day = 365;
+                    condition_repeat_explain = "Year";
+                    otherConditions.set(1, new OtherCondition(R.drawable.repeat, "Repeat", condition_repeat_explain));
+                    theConditionAdapter.notifyDataSetChanged();
+                }
                 if(which==3)    //自定义天数，再创建一个AlertDialog
                 {
                     final EditText et = new EditText(EditEventActivity.this);
@@ -299,18 +313,27 @@ public class EditEventActivity extends AppCompatActivity {
                                     }
                                     else {
                                         repeat_day= Integer.parseInt(input);    //将String转化为int
+                                        condition_repeat_explain=repeat_day+"DAYS LEFT";
+                                        otherConditions.set(1,new OtherCondition(R.drawable.repeat,"Repeat",condition_repeat_explain));
+                                        theConditionAdapter.notifyDataSetChanged();
                                     }
                                 }
                             })
                             .setNegativeButton("CANCEL", null)
                             .show();
 
+
                 }
-                if(which==4)    //不重复
-                    repeat_day=0;
+                if(which==4) {    //不重复
+                    repeat_day = 0;
+                    condition_repeat_explain="None";
+                    otherConditions.set(1,new OtherCondition(R.drawable.repeat,"Repeat",condition_repeat_explain));
+                    theConditionAdapter.notifyDataSetChanged();
+                }
             }
         });
         builder.create().show();
+
     }
 
 
