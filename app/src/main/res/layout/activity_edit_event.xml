@@ -17,7 +17,7 @@
             android:id="@+id/image_view_pic"
             android:layout_width="match_parent"
             android:layout_height="224dp"
-            android:background="@color/colorPrimary" />
+            android:background="@color/colorPrimary"/>
 
         <LinearLayout
             android:layout_width="300dp"

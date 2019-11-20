@@ -5,13 +5,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.InputType;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +30,6 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -33,13 +42,18 @@ import com.example.itimeapplication.data.model.EventDate;
 import com.example.itimeapplication.data.model.OtherCondition;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.time.Year;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 
 public class EditEventActivity extends AppCompatActivity {
 
+    private static final int CHOICE_FROM_ALBUM_REQUEST_CODE = 208;
+    private static final int CROP_PHOTO_REQUEST_CODE = 209;
     private EditText editTextName,editTextDescription;
     private FloatingActionButton fabBack,fabOk;
 
@@ -55,7 +69,16 @@ public class EditEventActivity extends AppCompatActivity {
     private TimePickerDialog timePickerDialog;
     private Calendar calendar;
     private EventDate mDate;
-    private int mYear,mMonth,mDay,mHour,mMinute;
+
+    private ImageView imageViewPic;
+
+    //拍照功能参数
+    private static final int CHOOSE_PHOTO = 301;
+    private final static int CROP_IMAGE = 302;
+    //imageUri照片真实路径
+    private Uri imageUri;
+    //照片存储
+    File filePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +86,8 @@ public class EditEventActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)      //取消标题栏
             getSupportActionBar().hide();
         setContentView(R.layout.activity_edit_event);
+
+        imageViewPic=findViewById(R.id.image_view_pic);
 
         //获取当前时间,并将mDate初始化为当前时间
         calendar = Calendar.getInstance();
@@ -131,15 +156,13 @@ public class EditEventActivity extends AppCompatActivity {
                 String m= String.valueOf(i);    //调试使用
                 Log.i("点击了一个item ", m);
                 if(i==0) {       //选择日期
-                    calendar = Calendar.getInstance();
                     showDailog();
                 }
                 if(i==1){  //选择周期
                     showRepeat();
                 }
                 if(i==2){   //选择图片
-
-
+                    openAlbum();
                 }
                 if(i==3){   //添加标签
 
@@ -147,6 +170,81 @@ public class EditEventActivity extends AppCompatActivity {
             }
         });
     }
+
+    //打开相册
+    private void openAlbum() {
+        Intent intent_album = new Intent( Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI );
+
+        startActivityForResult( intent_album, CHOOSE_PHOTO );
+    }
+
+    //剪切图片
+    private void startImageCrop(File saveToFile,Uri uri) {
+        if(uri == null){
+            return ;
+        }
+        Intent intent = new Intent( "com.android.camera.action.CROP" );
+        Log.i( "测试：", "startImageCrop: " + "执行到压缩图片了" + "uri is " + uri );
+        intent.setDataAndType( uri, "image/*" );//设置Uri及类型
+        //uri权限，如果不加的话会产生无法加载图片的问题
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        //进行剪切的一些设置
+        intent.putExtra( "crop", "true" );//
+        intent.putExtra( "aspectX", 460 );//X方向上的比例
+        intent.putExtra( "aspectY", 250 );//Y方向上的比例
+        intent.putExtra( "outputX", 460 );//裁剪区的X方向宽
+        intent.putExtra( "outputY", 250 );//裁剪区的Y方向宽
+        intent.putExtra( "scale", true );//是否保留比例
+        intent.putExtra( "outputFormat", Bitmap.CompressFormat.PNG.toString() );
+        intent.putExtra( "return-data", false );//是否将数据保留在Bitmap中返回dataParcelable相应的Bitmap数据，防止造成OOM，置位false
+        //判断文件是否存在
+        if (!saveToFile.getParentFile().exists()) {
+            saveToFile.getParentFile().mkdirs();
+        }
+        //将剪切后的图片存储到此文件
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(saveToFile));
+        Log.i( "测试：", "startImageCrop: " + "即将跳到剪切图片" );
+        startActivityForResult( intent, CROP_IMAGE );
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case CHOOSE_PHOTO:
+                if (resultCode == RESULT_OK) {
+                    //选中相册照片显示
+                    Log.i( "测试：", "onActivityResult: 执行到打开相册了" );
+                    try {
+                        imageUri = data.getData(); //获取系统返回的照片的Uri
+                        Log.i( "测试：", "onActivityResult: uriImage is " +imageUri );
+
+                        //设置照片存储文件及剪切图片
+                        String name = DateFormat.format("eventBackground", Calendar.getInstance( Locale.CHINA)) + ".png";
+                        Log.i( "测试：", " name : "+name );
+                        //定义图片存放的位置
+                        filePath = new File(EditEventActivity.this.getExternalCacheDir(),name);
+
+                        startImageCrop( filePath,imageUri );
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+            case CROP_IMAGE:
+                if(resultCode == RESULT_OK){
+                    Log.i( "Test", "onActivityResult: CROP_IMAGE" + "进入了CROP");
+                    //通过FileName拿到图片
+                    Bitmap bitmap = BitmapFactory.decodeFile( filePath.toString() );
+                    //把裁剪后的图片展示出来
+                    imageViewPic.setImageBitmap( bitmap );
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
 
     private void InitData()
     {
@@ -157,6 +255,7 @@ public class EditEventActivity extends AppCompatActivity {
     }
 
     private void showDailog() {     //日历弹出选择框
+        calendar = Calendar.getInstance();
         datePickerDialog=new DatePickerDialog(EditEventActivity.this,R.style.Theme_AppCompat_Light_Dialog,
                 null,calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",new DialogInterface.OnClickListener() {
@@ -224,7 +323,7 @@ public class EditEventActivity extends AppCompatActivity {
 
     private void showDateCalculator()
     {
-        final View alertDialogView = getLayoutInflater ().inflate (R.layout.alertdialog_calendar_layout, null, false);
+        final View alertDialogView = getLayoutInflater ().inflate (R.layout.alertdialog_calculator_layout, null, false);
         AlertDialog.Builder inputDayAlertDialog = new AlertDialog.Builder (EditEventActivity.this);
         inputDayAlertDialog.setView (alertDialogView);
 
@@ -335,6 +434,7 @@ public class EditEventActivity extends AppCompatActivity {
         builder.create().show();
 
     }
+
 
 
     public class ConditionsArrayAdapter extends ArrayAdapter<OtherCondition>

@@ -75,7 +75,16 @@ public class EventDate {
     public String display_date_and_time(){
         String[] en_month={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
         String display;
-        display=en_month[month]+"  "+day+" , "+year+"   "+hour+":"+minute;
+        String time = null;
+        if(hour<10&&minute>=10)
+            time="0"+hour+":"+minute;
+        if(hour>=10&&minute<10)
+            time=hour+":0"+minute;
+        if(hour<10&&minute<10)
+            time="0"+hour+":0"+minute;
+        if(hour>=10&&minute>=10)
+            time=hour+":"+minute;
+        display=en_month[month]+"  "+day+" , "+year+"   "+time;
         return display;
 
     }
