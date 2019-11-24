@@ -17,6 +17,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -72,7 +73,7 @@ public class EditEventActivity extends AppCompatActivity {
     String condition_date_explain;
     String condition_repeat_explain;
 
-    private int repeat_day;     //保存周期的天数
+    private int repeat_day=0;     //保存周期的天数
     private DatePickerDialog datePickerDialog;
     private TimePickerDialog timePickerDialog;
     private Calendar calendar;
@@ -87,6 +88,8 @@ public class EditEventActivity extends AppCompatActivity {
     private Uri imageUri;
     //照片存储
     File filePath;
+
+    private int editCode;
 
     //private Bitmap myBitmap=BitmapFactory.decodeResource(getResources(), R.drawable.a1);
 
@@ -103,13 +106,22 @@ public class EditEventActivity extends AppCompatActivity {
         calendar = Calendar.getInstance();
         mDate = new EventDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
                 calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
-
-
-        editPosition = getIntent().getIntExtra("time_position", 0);
+        editCode=getIntent().getIntExtra("edit_code", 0);
         editTextName = findViewById(R.id.edit_text_name);
-        editTextName.setText(getIntent().getStringExtra("time_name"));
         editTextDescription = findViewById(R.id.edit_text_description);
-        editTextDescription.setText(getIntent().getStringExtra("time_description"));
+        if(editCode==1) {   //若是修改编辑倒计时事件，则需要对一些数据初始赋值
+            thisEvent = (Event) getIntent().getSerializableExtra("data4.txt");
+            editPosition = getIntent().getIntExtra("time_position", 0);
+            editTextName.setText(thisEvent.getName());
+            editTextDescription.setText(thisEvent.getDescription());
+
+            if(null!=thisEvent.getPictureFilePath()) {  //若事件设置了图片
+                Bitmap bitmap = BitmapFactory.decodeFile(thisEvent.getPictureFilePath().toString());
+                imageViewPic.setImageBitmap(bitmap);
+            }
+
+        }
+
         fabBack = findViewById(R.id.fab_edit_back);
         fabOk = findViewById(R.id.fab_edit_ok);
 
@@ -127,30 +139,29 @@ public class EditEventActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "You did not enter an event name!", Toast.LENGTH_LONG).show();
                 else {
                     //将编辑的各个属性装入倒计时事件thisEvent中
-                    thisEvent=new Event(editTextName.getText().toString().trim(),editTextDescription.getText().toString().trim()
-                                            ,mDate,repeat_day);
+                    thisEvent = new Event(editTextName.getText().toString().trim(), editTextDescription.getText().toString().trim()
+                            , mDate, repeat_day, filePath);
+                    if (editCode == 0)  //新建事件
+                    {
+                        Intent intent = new Intent(EditEventActivity.this,MainActivity.class);
+                        Bundle mBundle = new Bundle();
+                        mBundle.putSerializable("data.txt", thisEvent);
 
-/*
+                        intent.putExtras(mBundle);
+                        setResult(RESULT_OK, intent);
+                        EditEventActivity.this.finish();
+                    }
+                    else if(editCode==1)    //修改事件
+                    {
+                        Intent intent = new Intent(EditEventActivity.this,EventDetailsActivity.class);
+                        Bundle mBundle = new Bundle();
+                        mBundle.putSerializable("data5.txt", thisEvent);
+                        intent.putExtra("edit_position", editPosition);
+                        intent.putExtras(mBundle);
+                        setResult(RESULT_OK, intent);
+                        EditEventActivity.this.finish();
 
-                    //,((BitmapDrawable)imageViewPic.getDrawable()).getBitmap()
-                    //将要传递的值附加到Intent对象
-                    intent.putExtra("edit_position", editPosition);
-                    intent.putExtra("time_name", editTextName.getText().toString().trim());
-                    intent.putExtra("time_description", editTextDescription.getText().toString().trim());
-                    setResult(RESULT_OK, intent);
-
-                    EditEventActivity.this.finish();
-*/
-                    Intent intent = new Intent();
-                    Bundle mBundle = new Bundle();
-                    mBundle.putSerializable("Serializable.txt",thisEvent);
-                    intent.putExtra("edit_position", editPosition);
-                    intent.putExtras(mBundle);
-                    setResult(RESULT_OK, intent);
-                    EditEventActivity.this.finish();
-
-
-
+                    }
 
                 }
 
@@ -266,6 +277,8 @@ public class EditEventActivity extends AppCompatActivity {
                     Bitmap bitmap = BitmapFactory.decodeFile(filePath.toString());
                     //把裁剪后的图片展示出来
                     imageViewPic.setImageBitmap(bitmap);
+
+
 
                 }
                 break;

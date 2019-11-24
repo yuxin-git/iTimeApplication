@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.itimeapplication.data.model.Event;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class EventDetailsActivity extends AppCompatActivity {
@@ -22,6 +23,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private FloatingActionButton fabBack,fabEdit,fabDelete;
     private static final int REQUEST_CODE_UPDATE_EVENT= 202;
     private static final int REQUEST_CODE_DELETE_EVENT = 204;
+    private Event thisEvent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,9 +32,10 @@ public class EventDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event_details);
 
         position = getIntent().getIntExtra("time_position", 0);
+        thisEvent= (Event) getIntent().getSerializableExtra("data2.txt");
         imageViewPicture = findViewById(R.id.image_view_det_pic);
         textViewName = findViewById(R.id.text_view_det_name);
-        textViewName.setText(getIntent().getStringExtra("time_name"));
+        textViewName.setText(thisEvent.getName());
         textViewDate = findViewById(R.id.text_view_det_date);
         textViewDate.setText(getIntent().getStringExtra("time_date"));
         timeDescription=getIntent().getStringExtra("time_description");
@@ -45,11 +48,14 @@ public class EventDetailsActivity extends AppCompatActivity {
                 Intent intent=new Intent();
                 //将要传递的值附加到Intent对象
                 intent.putExtra("edit_position",position);
-                intent.putExtra("time_name",textViewName.getText().toString().trim());
-                intent.putExtra("time_description",timeDescription);
-                setResult(RESULT_OK,intent);
+                Bundle mBundle = new Bundle();
+                mBundle.putSerializable("data3.txt",thisEvent);
+                intent.putExtras(mBundle);
 
+                setResult(RESULT_OK,intent);
                 EventDetailsActivity.this.finish();
+
+
             }
         });
 
@@ -58,9 +64,10 @@ public class EventDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(EventDetailsActivity.this, EditEventActivity.class);
-                intent.putExtra("time_name",textViewName.getText().toString().trim());
-                intent.putExtra("time_date",textViewDate.getText().toString().trim());
-                intent.putExtra("time_description",timeDescription);
+                Bundle mBundle = new Bundle();
+                mBundle.putSerializable("data4.txt",thisEvent);
+                intent.putExtras(mBundle);
+                intent.putExtra("edit_code",1);
 
                 startActivityForResult(intent,REQUEST_CODE_UPDATE_EVENT);
             }
@@ -101,11 +108,11 @@ public class EventDetailsActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_UPDATE_EVENT) {
             if (resultCode == RESULT_OK) {
-                String name = data.getStringExtra("time_name");
+                int position = data.getIntExtra("edit_position", 0);
+                Event event5= (Event) data.getSerializableExtra("data5.txt");
+                thisEvent=event5;
 
-                timeDescription = data.getStringExtra("time_description");
-
-                textViewName.setText(name);
+                textViewName.setText(event5.getName());
 
             }
         }

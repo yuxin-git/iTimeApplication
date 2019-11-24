@@ -1,25 +1,30 @@
 package com.example.itimeapplication.data.model;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 
+import java.io.File;
 import java.io.Serializable;
 
 public class Event implements Serializable {
 
-    private int pic_resource_id;
-    private String remain_time;
+
     private String name;
     private String description;
     private EventDate date;
     private int repeatDay;
-    private Bitmap picture;
 
-    public Event(String name, String description, EventDate date, int repeatDay) {
+    private File pictureFilePath;
+
+    private int pic_resource_id;
+    private String remain_time;
+
+    public Event(String name, String description, EventDate date, int repeatDay, File pictureFilePath) {
         this.name = name;
         this.description = description;
         this.date = date;
         this.repeatDay = repeatDay;
-
+        this.pictureFilePath = pictureFilePath;
     }
 
 
@@ -71,11 +76,12 @@ public class Event implements Serializable {
         this.repeatDay = repeatDay;
     }
 
-    public Bitmap getPicture() {
-        return picture;
+    public File getPictureFilePath() {
+        return pictureFilePath;
     }
 
-    public void setPicture(Bitmap picture) {
-        this.picture = picture;
+    public void setPictureFilePath(File pictureFilePath) {
+        this.pictureFilePath = pictureFilePath;
     }
+
 }

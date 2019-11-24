@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private int deleteCode=0; //控制删除操作，为1则执行删除操作，否则不执行
     private int deleteItemPosition;
 
+
    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(MainActivity.this, EditEventActivity.class);
+                intent.putExtra("edit_code",0);
                 startActivityForResult(intent,REQUEST_CODE_NEW_EVENT);
             }
         });
@@ -68,16 +70,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.i("点击了一个item ","1");
-                ImageView imageViewPic=view.findViewById(R.id.image_view_pic);
-                TextView textViewname=view.findViewById(R.id.text_view_name);
-                TextView textViewdate=view.findViewById(R.id.text_view_date);
-                TextView textViewdescription=view.findViewById(R.id.text_view_description);
 
                 Intent intent=new Intent(MainActivity.this, EventDetailsActivity.class);
                 intent.putExtra("time_position",i);
-                intent.putExtra("time_name",textViewname.getText().toString().trim());
-                intent.putExtra("time_date",textViewdate.getText().toString().trim());
-                intent.putExtra("time_description",textViewdescription.getText().toString().trim());
+                Event thisEvent=events.get(i);
+                Bundle mBundle = new Bundle();
+                mBundle.putSerializable("data2.txt",thisEvent);
+                intent.putExtras(mBundle);
 
                 startActivityForResult(intent,REQUEST_CODE_DETAILS);
             }
@@ -105,21 +104,21 @@ public class MainActivity extends AppCompatActivity {
             case REQUEST_CODE_NEW_EVENT:
                 if (resultCode == RESULT_OK) {
 
-                    Event event1= (Event) data.getSerializableExtra("Serializable.txt");
+                    Event event1= (Event) data.getSerializableExtra("data.txt");
                     events.add(event1);
                     theAdapter.notifyDataSetChanged();
+
                 }
+                break;
             case REQUEST_CODE_DETAILS:
                 if (resultCode == RESULT_OK) {
                     int position = data.getIntExtra("edit_position", 0);
-                    String name = data.getStringExtra("time_name");
-                    String description = data.getStringExtra("time_description");
 
-                    Event event = events.get(position);
-                    event.setName(name);
-                    event.setDescription(description);
+                    Event event3= (Event) data.getSerializableExtra("data3.txt");
+                    events.set(position,event3);
                     theAdapter.notifyDataSetChanged();
                 }
+                break;
         }
 
     }
