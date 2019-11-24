@@ -79,7 +79,7 @@
             android:id="@+id/edit_text_before"
             android:layout_width="45dp"
             android:layout_height="wrap_content"
-            android:inputType="number"/>
+            android:inputType="number" />
         <TextView
             android:id="@+id/text_view_before"
             android:layout_width="200dp"

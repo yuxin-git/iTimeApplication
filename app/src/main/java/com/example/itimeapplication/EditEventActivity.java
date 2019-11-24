@@ -20,9 +20,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,10 +57,10 @@ public class EditEventActivity extends AppCompatActivity {
 
     private static final int CHOICE_FROM_ALBUM_REQUEST_CODE = 208;
     private static final int CROP_PHOTO_REQUEST_CODE = 209;
-    private EditText editTextName,editTextDescription;
-    private FloatingActionButton fabBack,fabOk;
+    private EditText editTextName, editTextDescription;
+    private FloatingActionButton fabBack, fabOk;
 
-    private ArrayList<OtherCondition> otherConditions=new ArrayList<OtherCondition>();
+    private ArrayList<OtherCondition> otherConditions = new ArrayList<OtherCondition>();
     private ConditionsArrayAdapter theConditionAdapter;
     private int editPosition;
     ListView listViewCondition;
@@ -87,21 +90,21 @@ public class EditEventActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         setContentView(R.layout.activity_edit_event);
 
-        imageViewPic=findViewById(R.id.image_view_pic);
+        imageViewPic = findViewById(R.id.image_view_pic);
 
         //获取当前时间,并将mDate初始化为当前时间
         calendar = Calendar.getInstance();
-        mDate=new EventDate(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH),
-                calendar.get(Calendar.HOUR),calendar.get(Calendar.MINUTE),calendar.get(Calendar.SECOND));
+        mDate = new EventDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+                calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
 
 
-        editPosition=getIntent().getIntExtra("time_position",0);
-        editTextName=findViewById(R.id.edit_text_name);
+        editPosition = getIntent().getIntExtra("time_position", 0);
+        editTextName = findViewById(R.id.edit_text_name);
         editTextName.setText(getIntent().getStringExtra("time_name"));
-        editTextDescription=findViewById(R.id.edit_text_description);
+        editTextDescription = findViewById(R.id.edit_text_description);
         editTextDescription.setText(getIntent().getStringExtra("time_description"));
-        fabBack=findViewById(R.id.fab_edit_back);
-        fabOk=findViewById(R.id.fab_edit_ok);
+        fabBack = findViewById(R.id.fab_edit_back);
+        fabOk = findViewById(R.id.fab_edit_ok);
 
         fabBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,15 +116,15 @@ public class EditEventActivity extends AppCompatActivity {
         fabOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(editTextName.getText().toString().isEmpty())     //如果未输入name
+                if (editTextName.getText().toString().isEmpty())     //如果未输入name
                     Toast.makeText(getApplicationContext(), "You did not enter an event name!", Toast.LENGTH_LONG).show();
-                else{
-                    Intent intent=new Intent();
+                else {
+                    Intent intent = new Intent();
                     //将要传递的值附加到Intent对象
-                    intent.putExtra("edit_position",editPosition);
-                    intent.putExtra("time_name",editTextName.getText().toString().trim());
-                    intent.putExtra("time_description",editTextDescription.getText().toString().trim());
-                    setResult(RESULT_OK,intent);
+                    intent.putExtra("edit_position", editPosition);
+                    intent.putExtra("time_name", editTextName.getText().toString().trim());
+                    intent.putExtra("time_description", editTextDescription.getText().toString().trim());
+                    setResult(RESULT_OK, intent);
 
                     EditEventActivity.this.finish();
                 }
@@ -129,19 +132,19 @@ public class EditEventActivity extends AppCompatActivity {
             }
         });
 
-        condition_date_explain="Long press to use Date Calculator";
-        condition_repeat_explain="None";
+        condition_date_explain = "Long press to use Date Calculator";
+        condition_repeat_explain = "None";
         InitData();
-        theConditionAdapter=new ConditionsArrayAdapter(this,R.layout.list_item_extra_condition, otherConditions);
+        theConditionAdapter = new ConditionsArrayAdapter(this, R.layout.list_item_extra_condition, otherConditions);
 
-        listViewCondition= this.findViewById(R.id.list_view_conditions);
+        listViewCondition = this.findViewById(R.id.list_view_conditions);
         listViewCondition.setAdapter(theConditionAdapter);
 
         //ListView中item的长按事件，只需实现Date的
         listViewCondition.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(i==0) {
+                if (i == 0) {
                     Log.i("长按", "Date"); //日志
                     showDateCalculator();
                 }
@@ -153,18 +156,18 @@ public class EditEventActivity extends AppCompatActivity {
         listViewCondition.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String m= String.valueOf(i);    //调试使用
+                String m = String.valueOf(i);    //调试使用
                 Log.i("点击了一个item ", m);
-                if(i==0) {       //选择日期
+                if (i == 0) {       //选择日期
                     showDailog();
                 }
-                if(i==1){  //选择周期
+                if (i == 1) {  //选择周期
                     showRepeat();
                 }
-                if(i==2){   //选择图片
+                if (i == 2) {   //选择图片
                     openAlbum();
                 }
-                if(i==3){   //添加标签
+                if (i == 3) {   //添加标签
 
                 }
             }
@@ -173,39 +176,39 @@ public class EditEventActivity extends AppCompatActivity {
 
     //打开相册
     private void openAlbum() {
-        Intent intent_album = new Intent( Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI );
+        Intent intent_album = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
-        startActivityForResult( intent_album, CHOOSE_PHOTO );
+        startActivityForResult(intent_album, CHOOSE_PHOTO);
     }
 
     //剪切图片
-    private void startImageCrop(File saveToFile,Uri uri) {
-        if(uri == null){
-            return ;
+    private void startImageCrop(File saveToFile, Uri uri) {
+        if (uri == null) {
+            return;
         }
-        Intent intent = new Intent( "com.android.camera.action.CROP" );
-        Log.i( "测试：", "startImageCrop: " + "执行到压缩图片了" + "uri is " + uri );
-        intent.setDataAndType( uri, "image/*" );//设置Uri及类型
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        Log.i("测试：", "startImageCrop: " + "执行到压缩图片了" + "uri is " + uri);
+        intent.setDataAndType(uri, "image/*");//设置Uri及类型
         //uri权限，如果不加的话会产生无法加载图片的问题
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         //进行剪切的一些设置
-        intent.putExtra( "crop", "true" );//
-        intent.putExtra( "aspectX", 460 );//X方向上的比例
-        intent.putExtra( "aspectY", 250 );//Y方向上的比例
-        intent.putExtra( "outputX", 460 );//裁剪区的X方向宽
-        intent.putExtra( "outputY", 250 );//裁剪区的Y方向宽
-        intent.putExtra( "scale", true );//是否保留比例
-        intent.putExtra( "outputFormat", Bitmap.CompressFormat.PNG.toString() );
-        intent.putExtra( "return-data", false );//是否将数据保留在Bitmap中返回dataParcelable相应的Bitmap数据，防止造成OOM，置位false
+        intent.putExtra("crop", "true");//
+        intent.putExtra("aspectX", 460);//X方向上的比例
+        intent.putExtra("aspectY", 250);//Y方向上的比例
+        intent.putExtra("outputX", 460);//裁剪区的X方向宽
+        intent.putExtra("outputY", 250);//裁剪区的Y方向宽
+        intent.putExtra("scale", true);//是否保留比例
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString());
+        intent.putExtra("return-data", false);//是否将数据保留在Bitmap中返回dataParcelable相应的Bitmap数据，防止造成OOM，置位false
         //判断文件是否存在
         if (!saveToFile.getParentFile().exists()) {
             saveToFile.getParentFile().mkdirs();
         }
         //将剪切后的图片存储到此文件
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(saveToFile));
-        Log.i( "测试：", "startImageCrop: " + "即将跳到剪切图片" );
-        startActivityForResult( intent, CROP_IMAGE );
+        Log.i("测试：", "startImageCrop: " + "即将跳到剪切图片");
+        startActivityForResult(intent, CROP_IMAGE);
     }
 
     @Override
@@ -214,30 +217,30 @@ public class EditEventActivity extends AppCompatActivity {
             case CHOOSE_PHOTO:
                 if (resultCode == RESULT_OK) {
                     //选中相册照片显示
-                    Log.i( "测试：", "onActivityResult: 执行到打开相册了" );
+                    Log.i("测试：", "onActivityResult: 执行到打开相册了");
                     try {
                         imageUri = data.getData(); //获取系统返回的照片的Uri
-                        Log.i( "测试：", "onActivityResult: uriImage is " +imageUri );
+                        Log.i("测试：", "onActivityResult: uriImage is " + imageUri);
 
                         //设置照片存储文件及剪切图片
-                        String name = DateFormat.format("eventBackground", Calendar.getInstance( Locale.CHINA)) + ".png";
-                        Log.i( "测试：", " name : "+name );
+                        String name = DateFormat.format("eventBackground", Calendar.getInstance(Locale.CHINA)) + ".png";
+                        Log.i("测试：", " name : " + name);
                         //定义图片存放的位置
-                        filePath = new File(EditEventActivity.this.getExternalCacheDir(),name);
+                        filePath = new File(EditEventActivity.this.getExternalCacheDir(), name);
 
-                        startImageCrop( filePath,imageUri );
+                        startImageCrop(filePath, imageUri);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
                 break;
             case CROP_IMAGE:
-                if(resultCode == RESULT_OK){
-                    Log.i( "Test", "onActivityResult: CROP_IMAGE" + "进入了CROP");
+                if (resultCode == RESULT_OK) {
+                    Log.i("Test", "onActivityResult: CROP_IMAGE" + "进入了CROP");
                     //通过FileName拿到图片
-                    Bitmap bitmap = BitmapFactory.decodeFile( filePath.toString() );
+                    Bitmap bitmap = BitmapFactory.decodeFile(filePath.toString());
                     //把裁剪后的图片展示出来
-                    imageViewPic.setImageBitmap( bitmap );
+                    imageViewPic.setImageBitmap(bitmap);
                 }
                 break;
             default:
@@ -246,19 +249,18 @@ public class EditEventActivity extends AppCompatActivity {
     }
 
 
-    private void InitData()
-    {
-        otherConditions.add(new OtherCondition(R.drawable.clock,"Date",condition_date_explain));
-        otherConditions.add(new OtherCondition(R.drawable.repeat,"Repeat",condition_repeat_explain));
-        otherConditions.add(new OtherCondition(R.drawable.picture,"Picture",""));
-        otherConditions.add(new OtherCondition(R.drawable.label,"Add Label",""));
+    private void InitData() {
+        otherConditions.add(new OtherCondition(R.drawable.clock, "Date", condition_date_explain));
+        otherConditions.add(new OtherCondition(R.drawable.repeat, "Repeat", condition_repeat_explain));
+        otherConditions.add(new OtherCondition(R.drawable.picture, "Picture", ""));
+        otherConditions.add(new OtherCondition(R.drawable.label, "Add Label", ""));
     }
 
     private void showDailog() {     //日历弹出选择框
         calendar = Calendar.getInstance();
-        datePickerDialog=new DatePickerDialog(EditEventActivity.this,R.style.Theme_AppCompat_Light_Dialog,
-                null,calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-        datePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",new DialogInterface.OnClickListener() {
+        datePickerDialog = new DatePickerDialog(EditEventActivity.this, R.style.Theme_AppCompat_Light_Dialog,
+                null, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 DatePicker datePicker = datePickerDialog.getDatePicker();
@@ -273,14 +275,14 @@ public class EditEventActivity extends AppCompatActivity {
                 mDate.setDay(day);
 
                 //修改详情界面Date的描述
-                condition_date_explain=mDate.display_date();
-                otherConditions.set(0,new OtherCondition(R.drawable.clock,"Date",condition_date_explain));
+                condition_date_explain = mDate.display_date();
+                otherConditions.set(0, new OtherCondition(R.drawable.clock, "Date", condition_date_explain));
                 theConditionAdapter.notifyDataSetChanged();
 
                 showTime();  //继续设置时间
             }
         });
-        datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "CANCEL",new DialogInterface.OnClickListener() {
+        datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "CANCEL", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
             }
@@ -290,7 +292,7 @@ public class EditEventActivity extends AppCompatActivity {
     }
 
     private void showTime() {       //时间弹出选择框
-        timePickerDialog = new TimePickerDialog(this, R.style.Theme_AppCompat_Light_Dialog,new TimePickerDialog.OnTimeSetListener() {
+        timePickerDialog = new TimePickerDialog(this, R.style.Theme_AppCompat_Light_Dialog, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 Log.d("测试：hour", Integer.toString(hourOfDay));
@@ -306,13 +308,13 @@ public class EditEventActivity extends AppCompatActivity {
             }
         },
                 calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
-        timePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",new DialogInterface.OnClickListener() {
+        timePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
             }
         });
-        timePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "CANCEL",new DialogInterface.OnClickListener() {
+        timePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "CANCEL", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
             }
@@ -321,22 +323,77 @@ public class EditEventActivity extends AppCompatActivity {
         timePickerDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
-    private void showDateCalculator()
-    {
-        final View alertDialogView = getLayoutInflater ().inflate (R.layout.alertdialog_calculator_layout, null, false);
-        AlertDialog.Builder inputDayAlertDialog = new AlertDialog.Builder (EditEventActivity.this);
-        inputDayAlertDialog.setView (alertDialogView);
+    private void showDateCalculator() {
+        final Calendar[] calCalendar = {Calendar.getInstance()};    //获取当前时间
+        final EventDate calDate = new EventDate(calCalendar[0].get(Calendar.YEAR), calCalendar[0].get(Calendar.MONTH),
+                calCalendar[0].get(Calendar.DAY_OF_MONTH), calCalendar[0].get(Calendar.HOUR),
+                calCalendar[0].get(Calendar.MINUTE), calCalendar[0].get(Calendar.SECOND));
+        final View alertDialogView = getLayoutInflater().inflate(R.layout.alertdialog_calculator_layout, null, false);
+        AlertDialog.Builder inputDayAlertDialog = new AlertDialog.Builder(EditEventActivity.this);
+        inputDayAlertDialog.setView(alertDialogView);
 
-        EditText editTextAfter=alertDialogView.findViewById(R.id.edit_text_after);
-        EditText editTextBefore=alertDialogView.findViewById(R.id.edit_text_before);
-        int valueAfter=Integer.parseInt(editTextAfter.getText().toString());
+        TextView textViewCalendar = alertDialogView.findViewById(R.id.text_view_calendar);
+        textViewCalendar.setText(calDate.display_date());
+        final TextView textViewAfter = alertDialogView.findViewById(R.id.text_view_after);
+        final TextView textViewBefore = alertDialogView.findViewById(R.id.text_view_before);
+        textViewAfter.setText("days after: " + calDate.display_date());
+        textViewBefore.setText("days before: " + calDate.display_date());
+        final EditText editTextAfter = alertDialogView.findViewById(R.id.edit_text_after);
+        final EditText editTextBefore = alertDialogView.findViewById(R.id.edit_text_before);
 
-        TextView textViewCalendar=alertDialogView.findViewById(R.id.text_view_calendar);
-        textViewCalendar.setText(mDate.display_date());
-        TextView textViewAfter=alertDialogView.findViewById(R.id.text_view_after);
-        textViewAfter.setText("days after: "+mDate.display_date());
-        TextView textViewBefore=alertDialogView.findViewById(R.id.text_view_before);
-        textViewBefore.setText("days before: "+mDate.display_date());
+        editTextAfter.setOnKeyListener(new EditText.OnKeyListener() {
+            @Override
+            public boolean onKey(View arg0, int arg1, KeyEvent arg2) {
+
+                if (editTextAfter.getText().toString().isEmpty()) {
+                    calCalendar[0] = Calendar.getInstance();
+                    textViewAfter.setText("days after: " + calDate.display_date());
+
+                }
+                if (!editTextAfter.getText().toString().equals("")) {
+                    int valueAfter = Integer.parseInt(editTextAfter.getText().toString());
+                    calCalendar[0] = Calendar.getInstance();
+                    calCalendar[0].add(Calendar.DAY_OF_MONTH, valueAfter);
+                    calDate.setYear(calCalendar[0].get(Calendar.YEAR));
+                    calDate.setMonth(calCalendar[0].get(Calendar.MONTH));
+                    calDate.setDay(calCalendar[0].get(Calendar.DAY_OF_MONTH));
+                    Log.i("calDate.day", String.valueOf(calDate.getDay()));
+                    textViewAfter.setText("days after: " + calDate.display_date());
+                }
+                return false;
+            }
+        });
+
+
+        editTextBefore.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editTextBefore.getText().toString().trim().isEmpty()) {
+                    calCalendar[0] = Calendar.getInstance();
+                    textViewBefore.setText("days before: " + calDate.display_date());
+                }
+                if (!editTextBefore.getText().toString().equals("")) {
+                    int valueBefore = Integer.parseInt(editTextBefore.getText().toString());
+                    calCalendar[0] = Calendar.getInstance();
+                    calCalendar[0].add(Calendar.DAY_OF_MONTH, valueBefore);
+                    calDate.setYear(calCalendar[0].get(Calendar.YEAR));
+                    calDate.setMonth(calCalendar[0].get(Calendar.MONTH));
+                    calDate.setDay(calCalendar[0].get(Calendar.DAY_OF_MONTH));
+                    Log.i("calDate.day", String.valueOf(calDate.getDay()));
+                    textViewBefore.setText("days before: " + calDate.display_date());
+                }
+            }
+        });
 
 
         Button buttonAfterPick;
