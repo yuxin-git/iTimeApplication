@@ -325,19 +325,22 @@ public class EditEventActivity extends AppCompatActivity {
 
     private void showDateCalculator() {
         final Calendar[] calCalendar = {Calendar.getInstance()};    //获取当前时间
-        final EventDate calDate = new EventDate(calCalendar[0].get(Calendar.YEAR), calCalendar[0].get(Calendar.MONTH),
+        final EventDate afterDate = new EventDate(calCalendar[0].get(Calendar.YEAR), calCalendar[0].get(Calendar.MONTH),
+                calCalendar[0].get(Calendar.DAY_OF_MONTH), calCalendar[0].get(Calendar.HOUR),
+                calCalendar[0].get(Calendar.MINUTE), calCalendar[0].get(Calendar.SECOND));
+        final EventDate beforeDate = new EventDate(calCalendar[0].get(Calendar.YEAR), calCalendar[0].get(Calendar.MONTH),
                 calCalendar[0].get(Calendar.DAY_OF_MONTH), calCalendar[0].get(Calendar.HOUR),
                 calCalendar[0].get(Calendar.MINUTE), calCalendar[0].get(Calendar.SECOND));
         final View alertDialogView = getLayoutInflater().inflate(R.layout.alertdialog_calculator_layout, null, false);
-        AlertDialog.Builder inputDayAlertDialog = new AlertDialog.Builder(EditEventActivity.this);
+        final AlertDialog.Builder inputDayAlertDialog = new AlertDialog.Builder(EditEventActivity.this);
         inputDayAlertDialog.setView(alertDialogView);
 
         TextView textViewCalendar = alertDialogView.findViewById(R.id.text_view_calendar);
-        textViewCalendar.setText(calDate.display_date());
+        textViewCalendar.setText(afterDate.display_date());
         final TextView textViewAfter = alertDialogView.findViewById(R.id.text_view_after);
         final TextView textViewBefore = alertDialogView.findViewById(R.id.text_view_before);
-        textViewAfter.setText("days after: " + calDate.display_date());
-        textViewBefore.setText("days before: " + calDate.display_date());
+        textViewAfter.setText("days after: " + afterDate.display_date());
+        textViewBefore.setText("days before: " + afterDate.display_date());
         final EditText editTextAfter = alertDialogView.findViewById(R.id.edit_text_after);
         final EditText editTextBefore = alertDialogView.findViewById(R.id.edit_text_before);
 
@@ -345,72 +348,41 @@ public class EditEventActivity extends AppCompatActivity {
             @Override
             public boolean onKey(View arg0, int arg1, KeyEvent arg2) {
 
-                if (editTextAfter.getText().toString().isEmpty()) {
-                    calCalendar[0] = Calendar.getInstance();
-                    textViewAfter.setText("days after: " + calDate.display_date());
-
+                Log.i("editText:",editTextAfter.getEditableText().toString());
+                int valueAfter=0;
+                if (!editTextAfter.getText().toString().equals("")&& arg2.getAction() == KeyEvent.ACTION_UP) {
+                    valueAfter = Integer.parseInt(editTextAfter.getText().toString());
                 }
-                if (!editTextAfter.getText().toString().equals("")) {
-                    int valueAfter = Integer.parseInt(editTextAfter.getText().toString());
                     calCalendar[0] = Calendar.getInstance();
                     calCalendar[0].add(Calendar.DAY_OF_MONTH, valueAfter);
-                    calDate.setYear(calCalendar[0].get(Calendar.YEAR));
-                    calDate.setMonth(calCalendar[0].get(Calendar.MONTH));
-                    calDate.setDay(calCalendar[0].get(Calendar.DAY_OF_MONTH));
-                    Log.i("calDate.day", String.valueOf(calDate.getDay()));
-                    textViewAfter.setText("days after: " + calDate.display_date());
-                }
+                    afterDate.setYear(calCalendar[0].get(Calendar.YEAR));
+                    afterDate.setMonth(calCalendar[0].get(Calendar.MONTH));
+                    afterDate.setDay(calCalendar[0].get(Calendar.DAY_OF_MONTH));
+                    Log.i("calDate.day", String.valueOf(afterDate.getDay()));
+                    textViewAfter.setText("days after: " + afterDate.display_date());
+
                 return false;
             }
         });
 
-
-        editTextBefore.addTextChangedListener(new TextWatcher() {
+        editTextBefore.setOnKeyListener(new EditText.OnKeyListener() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public boolean onKey(View arg0, int arg1, KeyEvent arg2) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (editTextBefore.getText().toString().trim().isEmpty()) {
-                    calCalendar[0] = Calendar.getInstance();
-                    textViewBefore.setText("days before: " + calDate.display_date());
+                Log.i("editText:",editTextAfter.getEditableText().toString());
+                int valueBefore=0;
+                if (!editTextBefore.getText().toString().equals("")&& arg2.getAction() == KeyEvent.ACTION_UP) {
+                    valueBefore = Integer.parseInt(editTextBefore.getText().toString());
                 }
-                if (!editTextBefore.getText().toString().equals("")) {
-                    int valueBefore = Integer.parseInt(editTextBefore.getText().toString());
-                    calCalendar[0] = Calendar.getInstance();
-                    calCalendar[0].add(Calendar.DAY_OF_MONTH, valueBefore);
-                    calDate.setYear(calCalendar[0].get(Calendar.YEAR));
-                    calDate.setMonth(calCalendar[0].get(Calendar.MONTH));
-                    calDate.setDay(calCalendar[0].get(Calendar.DAY_OF_MONTH));
-                    Log.i("calDate.day", String.valueOf(calDate.getDay()));
-                    textViewBefore.setText("days before: " + calDate.display_date());
-                }
-            }
-        });
+                calCalendar[0] = Calendar.getInstance();
+                calCalendar[0].add(Calendar.DAY_OF_MONTH, -valueBefore);
+                beforeDate.setYear(calCalendar[0].get(Calendar.YEAR));
+                beforeDate.setMonth(calCalendar[0].get(Calendar.MONTH));
+                beforeDate.setDay(calCalendar[0].get(Calendar.DAY_OF_MONTH));
+                Log.i("calDate.day", String.valueOf(beforeDate.getDay()));
+                textViewBefore.setText("days before: " + beforeDate.display_date());
 
-
-        Button buttonAfterPick;
-        buttonAfterPick=alertDialogView.findViewById(R.id.button_after);
-        buttonAfterPick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-            }
-        });
-        Button buttonBeforePick;
-        buttonBeforePick=alertDialogView.findViewById(R.id.button_before);
-        buttonBeforePick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
+                return false;
             }
         });
 
@@ -422,7 +394,34 @@ public class EditEventActivity extends AppCompatActivity {
             }
         });
 
-        inputDayAlertDialog.show ();
+        final AlertDialog dialog = inputDayAlertDialog.show ();
+
+        Button buttonAfterPick;
+        buttonAfterPick=alertDialogView.findViewById(R.id.button_after);
+        buttonAfterPick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDate.setYear(afterDate.getYear());
+                mDate.setMonth(afterDate.getMonth());
+                mDate.setDay(afterDate.getDay());
+                dialog.dismiss();
+                showTime();
+            }
+        });
+
+        Button buttonBeforePick;
+        buttonBeforePick=alertDialogView.findViewById(R.id.button_before);
+        buttonBeforePick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDate.setYear(beforeDate.getYear());
+                mDate.setMonth(beforeDate.getMonth());
+                mDate.setDay(beforeDate.getDay());
+                dialog.dismiss();
+                showTime();
+            }
+        });
+
 
     }
 
