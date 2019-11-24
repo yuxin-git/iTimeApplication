@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.itimeapplication.data.EventSource;
 import com.example.itimeapplication.data.model.Event;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Event> events =new ArrayList<Event>();
     private TimesArrayAdapter theAdapter;
     ListView listViewEvent;
+    private EventSource eventSource;
 
     private static final int REQUEST_CODE_NEW_EVENT = 201;
     private static final int REQUEST_CODE_DETAILS = 203;
@@ -41,7 +43,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        InitData();
+        eventSource=new EventSource(this);
+        events=eventSource.load();
+
+
         theAdapter=new TimesArrayAdapter(this,R.layout.list_item_event, events);
 
         listViewEvent= this.findViewById(R.id.list_view_time);
@@ -88,16 +93,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        eventSource.save();
+    }
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode)
         {
             case REQUEST_CODE_NEW_EVENT:
                 if (resultCode == RESULT_OK) {
-                    String name = data.getStringExtra("time_name");
-                    String description = data.getStringExtra("time_description");
 
-                    events.add(new Event(R.drawable.a1,"未知", name, "data", description));
+                    Event event1= (Event) data.getSerializableExtra("Serializable.txt");
+                    events.add(event1);
                     theAdapter.notifyDataSetChanged();
                 }
             case REQUEST_CODE_DETAILS:
@@ -117,9 +126,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void InitData()
     {
-        events.add(new Event(R.drawable.a1,"DAYS","Birthday1","2001","无"));
+        /*
+        events.add(new Event("Birthday1","2001","无"));
         events.add(new Event(R.drawable.a1,"2DAYS","bir2","2003","无"));
         events.add(new Event(R.drawable.a1,"ADAYS","birth4","1999","无"));
+
+         */
     }
 
     private void DeleteEvent(int position)
@@ -151,10 +163,10 @@ public class MainActivity extends AppCompatActivity {
             TextView description = (TextView)item.findViewById(R.id.text_view_description);
 
             Event event_item = this.getItem(position);
-            pic.setImageResource(event_item.getPic_resource_id());
-            remain_time.setText(event_item.getRemain_time());
+            pic.setImageResource(R.drawable.a1);
+            remain_time.setText("3DAY");
             name.setText(event_item.getName());
-            date.setText(event_item.getDate());
+            date.setText(event_item.getDate().display_date_and_time());
             description.setText(event_item.getDescription());
 
 

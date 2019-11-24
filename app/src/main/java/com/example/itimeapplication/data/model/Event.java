@@ -1,21 +1,27 @@
 package com.example.itimeapplication.data.model;
 
-public class Event {
+import android.graphics.Bitmap;
+
+import java.io.Serializable;
+
+public class Event implements Serializable {
 
     private int pic_resource_id;
     private String remain_time;
     private String name;
-    private String date;
     private String description;
+    private EventDate date;
+    private int repeatDay;
+    private Bitmap picture;
 
-    public Event(int pic_resource_id, String remain_time, String name, String date, String description) {
-        this.pic_resource_id = pic_resource_id;
-        this.remain_time = remain_time;
+    public Event(String name, String description, EventDate date, int repeatDay) {
         this.name = name;
+        this.description = description;
         this.date = date;
-        this.description=description;
+        this.repeatDay = repeatDay;
 
     }
+
 
     public int getPic_resource_id() {
         return pic_resource_id;
@@ -41,14 +47,6 @@ public class Event {
         this.name = name;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -57,6 +55,27 @@ public class Event {
         this.description = description;
     }
 
+    public EventDate getDate() {
+        return date;
+    }
 
+    public void setDate(EventDate date) {
+        this.date = date;
+    }
 
+    public int getRepeatDay() {
+        return repeatDay;
+    }
+
+    public void setRepeatDay(int repeatDay) {
+        this.repeatDay = repeatDay;
+    }
+
+    public Bitmap getPicture() {
+        return picture;
+    }
+
+    public void setPicture(Bitmap picture) {
+        this.picture = picture;
+    }
 }

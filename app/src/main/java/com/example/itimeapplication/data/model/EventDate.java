@@ -1,6 +1,8 @@
 package com.example.itimeapplication.data.model;
 
-public class EventDate {
+import java.io.Serializable;
+
+public class EventDate implements Serializable {
 
     private int year;
     private int month;
