@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.Calendar;
 
 public class Event implements Serializable {
 
@@ -13,11 +14,10 @@ public class Event implements Serializable {
     private String description;
     private EventDate date;
     private int repeatDay;
-
     private File pictureFilePath;
-
     private int pic_resource_id;
     private String remain_time;
+
 
     public Event(String name, String description, EventDate date, int repeatDay, File pictureFilePath) {
         this.name = name;
@@ -37,11 +37,24 @@ public class Event implements Serializable {
     }
 
     public String getRemain_time() {
+        remain_time="";
+        Calendar calendar1=Calendar.getInstance();
+        Calendar calendar2=Calendar.getInstance();
+        calendar2.set(this.date.getYear(),this.date.getMonth(),this.date.getDay(),date.getHour(),date.getMinute(),date.getSecond());
+        long time1 = calendar1.getTimeInMillis();
+        long time2 = calendar2.getTimeInMillis();
+        int between_days= (int) ((time2-time1)/(1000*3600*24));
+        if(between_days==0)
+            remain_time="Today";
+        else if(between_days<0)
+            remain_time=between_days+"Days";
+        else if(between_days>0)
+            remain_time=between_days+"Days Ago";
         return remain_time;
-    }
+   }
 
-    public void setRemain_time(String remain_time) {
-        this.remain_time = remain_time;
+   public void setRemain_time(String remain_time) {
+       this.remain_time = remain_time;
     }
 
     public String getName() {

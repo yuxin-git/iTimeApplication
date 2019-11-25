@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
 
             Event event_item = this.getItem(position);
             pic.setImageResource(R.drawable.a1);
-            remain_time.setText("3DAY");
+            remain_time.setText(event_item.getRemain_time());
             name.setText(event_item.getName());
             date.setText(event_item.getDate().display_date_and_time());
             description.setText(event_item.getDescription());
