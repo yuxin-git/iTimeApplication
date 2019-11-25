@@ -16,7 +16,7 @@ public class Event implements Serializable {
     private int repeatDay;
     private File pictureFilePath;
     private int pic_resource_id;
-    private String remain_time;
+    private long remain_time;
 
 
     public Event(String name, String description, EventDate date, int repeatDay, File pictureFilePath) {
@@ -36,24 +36,11 @@ public class Event implements Serializable {
         this.pic_resource_id = pic_resource_id;
     }
 
-    public String getRemain_time() {
-        remain_time="";
-        Calendar calendar1=Calendar.getInstance();
-        Calendar calendar2=Calendar.getInstance();
-        calendar2.set(this.date.getYear(),this.date.getMonth(),this.date.getDay(),date.getHour(),date.getMinute(),date.getSecond());
-        long time1 = calendar1.getTimeInMillis();
-        long time2 = calendar2.getTimeInMillis();
-        int between_days= (int) ((time2-time1)/(1000*3600*24));
-        if(between_days==0)
-            remain_time="Today";
-        else if(between_days<0)
-            remain_time=between_days+"Days";
-        else if(between_days>0)
-            remain_time=between_days+"Days Ago";
+    public long getRemain_time() {
         return remain_time;
    }
 
-   public void setRemain_time(String remain_time) {
+   public void setRemain_time(long remain_time) {
        this.remain_time = remain_time;
     }
 
@@ -96,5 +83,27 @@ public class Event implements Serializable {
     public void setPictureFilePath(File pictureFilePath) {
         this.pictureFilePath = pictureFilePath;
     }
+
+    public String display_remian_time()
+    {
+        String remain="";
+        Calendar calendar1=Calendar.getInstance();
+        Calendar calendar2=Calendar.getInstance();
+        calendar2.set(this.date.getYear(),this.date.getMonth(),this.date.getDay(),date.getHour(),date.getMinute(),date.getSecond());
+        long time1 = calendar1.getTimeInMillis();
+        long time2 = calendar2.getTimeInMillis();
+        remain_time=time2-time1;
+        int between_days= (int) (remain_time/(1000*3600*24));
+        if(between_days==0)
+            remain="Today";
+        else if(between_days>0)
+            remain=between_days+" Days";
+        else if(between_days<0) {
+            between_days = -between_days;
+            remain = between_days + " Days\n  Ago";
+        }
+        return remain;
+    }
+
 
 }
