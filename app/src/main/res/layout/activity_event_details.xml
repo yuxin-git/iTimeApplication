@@ -9,7 +9,7 @@
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="fill_parent"
-        android:layout_height="200dp"
+        android:layout_height="225dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -19,6 +19,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:srcCompat="@drawable/a1" />
+
+
+
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_det_back"
@@ -62,6 +65,152 @@
             app:fabSize="mini"
             app:srcCompat="@drawable/ic_edit_white"
             tools:ignore="VectorDrawableCompat" />
+
+        <FrameLayout
+            android:id="@+id/fl_time_count"
+            android:layout_width="280dp"
+            android:layout_height="160dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="60dp">
+
+            <LinearLayout
+                android:layout_width="280dp"
+                android:layout_height="170dp"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/text_view_dis_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="TextView"
+                    android:textSize="25dp"
+                    android:textColor="@color/white"/>
+
+                <TextView
+                    android:id="@+id/text_view_dis_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="TextView"
+                    android:textSize="20dp"
+                    android:textColor="@color/white"/>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    >
+                    <LinearLayout
+                        android:id="@+id/linearLayout1"
+                        android:layout_width="70dp"
+                        android:layout_height="80dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginLeft="0dp"
+                        android:orientation="vertical"
+                        >
+
+                        <TextView
+                            android:id="@+id/text_view_dis_day"
+                            android:layout_width="70dp"
+                            android:layout_height="50dp"
+                            android:textSize="19dp"
+                            android:gravity="center"
+                            android:text="Text"
+                            android:textColor="@color/white"/>
+                        <TextView
+                            android:layout_width="70dp"
+                            android:layout_height="30dp"
+                            android:textSize="17dp"
+                            android:gravity="center"
+                            android:text="DAYS"
+                            android:textColor="@color/white"/>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/linearLayout2"
+                        android:layout_width="70dp"
+                        android:layout_height="80dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginLeft="70dp"
+                        android:orientation="vertical"
+                        >
+
+                        <TextView
+                            android:id="@+id/text_view_dis_hour"
+                            android:layout_width="70dp"
+                            android:layout_height="50dp"
+                            android:textSize="19dp"
+                            android:gravity="center"
+                            android:text="Text"
+                            android:textColor="@color/white"/>
+                        <TextView
+                            android:layout_width="70dp"
+                            android:layout_height="30dp"
+                            android:textSize="17dp"
+                            android:gravity="center"
+                            android:text="HRS"
+                            android:textColor="@color/white"/>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/linearLayout3"
+                        android:layout_width="70dp"
+                        android:layout_height="80dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginLeft="140dp"
+                        android:orientation="vertical"
+                        >
+
+                        <TextView
+                            android:id="@+id/text_view_dis_minute"
+                            android:layout_width="70dp"
+                            android:layout_height="50dp"
+                            android:textSize="19dp"
+                            android:gravity="center"
+                            android:text="Text"
+                            android:textColor="@color/white"/>
+                        <TextView
+                            android:layout_width="70dp"
+                            android:layout_height="30dp"
+                            android:textSize="17dp"
+                            android:gravity="center"
+                            android:text="MINS"
+                            android:textColor="@color/white"/>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/linearLayout4"
+                        android:layout_width="70dp"
+                        android:layout_height="80dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginLeft="210dp"
+                        android:orientation="vertical"
+                        >
+
+                        <TextView
+                            android:id="@+id/text_view_dis_second"
+                            android:layout_width="70dp"
+                            android:layout_height="50dp"
+                            android:textSize="19dp"
+                            android:gravity="center"
+                            android:text="Text"
+                            android:textColor="@color/white"/>
+                        <TextView
+                            android:layout_width="70dp"
+                            android:layout_height="30dp"
+                            android:textSize="17dp"
+                            android:gravity="center"
+                            android:text="SECS"
+                            android:textColor="@color/white"/>
+
+                    </LinearLayout>
+                </FrameLayout>
+
+            </LinearLayout>
+
+        </FrameLayout>
+
     </FrameLayout>
 
     <ImageView

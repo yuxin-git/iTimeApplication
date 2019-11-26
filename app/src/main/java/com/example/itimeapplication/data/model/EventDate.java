@@ -9,7 +9,7 @@ public class EventDate implements Serializable {
     private int day;
     private int hour;
     private int minute;
-    private int second;
+    private int second=0;
 
     public EventDate(int year, int month, int day, int hour, int minute, int second) {
         this.year = year;

@@ -3,16 +3,25 @@ package com.example.itimeapplication;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.itimeapplication.data.model.Event;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.Calendar;
 
 public class EventDetailsActivity extends AppCompatActivity {
 
@@ -24,6 +33,16 @@ public class EventDetailsActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_UPDATE_EVENT= 202;
     private static final int REQUEST_CODE_DELETE_EVENT = 204;
     private Event thisEvent;
+
+    private TextView textViewDays;
+    private TextView textViewHours;
+    private TextView textViewMunites;
+    private TextView textViewSeconds;
+
+    Calendar calendar1,calendar2;
+    int remain_time_s;    //保存事件时间和当前时间的差（秒为单位）
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,12 +53,30 @@ public class EventDetailsActivity extends AppCompatActivity {
         position = getIntent().getIntExtra("time_position", 0);
         thisEvent= (Event) getIntent().getSerializableExtra("data2.txt");
         imageViewPicture = findViewById(R.id.image_view_det_pic);
-        textViewName = findViewById(R.id.text_view_det_name);
+        if(null!=thisEvent.getPictureFilePath()) {
+            Bitmap bitmap = BitmapFactory.decodeFile(thisEvent.getPictureFilePath().toString());
+            //把裁剪后的图片展示出来
+            imageViewPicture.setImageBitmap(bitmap);
+        }
+        textViewName = findViewById(R.id.text_view_dis_name);
         textViewName.setText(thisEvent.getName());
-        textViewDate = findViewById(R.id.text_view_det_date);
-        textViewDate.setText(getIntent().getStringExtra("time_date"));
-        timeDescription=getIntent().getStringExtra("time_description");
+        textViewDate = findViewById(R.id.text_view_dis_date);
+        textViewDate.setText(thisEvent.getDate().display_date_and_time());
 
+        //绑定倒计时的时分秒textview
+        textViewDays=findViewById(R.id.text_view_dis_day);
+        textViewHours=findViewById(R.id.text_view_dis_hour);
+        textViewMunites=findViewById(R.id.text_view_dis_minute);
+        textViewSeconds=findViewById(R.id.text_view_dis_second);
+
+
+        calendar2=Calendar.getInstance();
+        calendar2.set(thisEvent.getDate().getYear(),thisEvent.getDate().getMonth(),thisEvent.getDate().getDay(),
+                thisEvent.getDate().getHour(), thisEvent.getDate().getMinute(),thisEvent.getDate().getSecond());
+
+
+        //创建一个线程用于倒计时
+        new Thread(new MyRunnable()).start();
 
         fabBack = findViewById(R.id.fab_det_back);    //返回按钮
         fabBack.setOnClickListener(new View.OnClickListener() {
@@ -102,6 +139,47 @@ public class EventDetailsActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    final Handler handler = new Handler(){     // handle
+        public void handleMessage(Message msg){
+            switch (msg.what) {
+                case 1:
+                    Log.i("测试：","运行到handler");
+                    calendar1=Calendar.getInstance();
+                    long time1 = calendar1.getTimeInMillis();
+                    long time2 = calendar2.getTimeInMillis();
+                    remain_time_s=(int)((time2-time1)/1000);
+                    if(remain_time_s<0)
+                        remain_time_s=-remain_time_s;
+                    int betweenDays=remain_time_s/(3600*24);
+                    int betweenHours=remain_time_s/(3600)-betweenDays*24;
+                    int betweenMunites=remain_time_s/(60)-betweenDays*24*60-betweenHours*60;
+                    int betweenSeconds=remain_time_s-betweenDays*24*3600-betweenHours*3600-betweenMunites*60;
+
+                    textViewDays.setText(String.valueOf(betweenDays));
+                    textViewHours.setText(String.valueOf(betweenHours));
+                    textViewMunites.setText(String.valueOf(betweenMunites));
+                    textViewSeconds.setText(String.valueOf(betweenSeconds));
+
+            }
+            super.handleMessage(msg);
+        }
+    };
+
+    public class MyRunnable implements Runnable{   // thread
+        @Override
+        public void run(){
+            while(true){
+                try{
+                    Thread.sleep(1000);   // sleep 1000ms
+                    Message message = new Message();
+                    message.what = 1;
+                    handler.sendMessage(message);
+                }catch (Exception e) {
+                }
+            }
+        }
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

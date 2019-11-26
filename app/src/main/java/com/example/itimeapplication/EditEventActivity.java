@@ -392,13 +392,13 @@ public class EditEventActivity extends AppCompatActivity {
                 if (!editTextAfter.getText().toString().equals("")&& arg2.getAction() == KeyEvent.ACTION_UP) {
                     valueAfter = Integer.parseInt(editTextAfter.getText().toString());
                 }
-                    calCalendar[0] = Calendar.getInstance();
-                    calCalendar[0].add(Calendar.DAY_OF_MONTH, valueAfter);
-                    afterDate.setYear(calCalendar[0].get(Calendar.YEAR));
-                    afterDate.setMonth(calCalendar[0].get(Calendar.MONTH));
-                    afterDate.setDay(calCalendar[0].get(Calendar.DAY_OF_MONTH));
-                    Log.i("calDate.day", String.valueOf(afterDate.getDay()));
-                    textViewAfter.setText("days after: " + afterDate.display_date());
+                calCalendar[0] = Calendar.getInstance();
+                calCalendar[0].add(Calendar.DAY_OF_MONTH, valueAfter);
+                afterDate.setYear(calCalendar[0].get(Calendar.YEAR));
+                afterDate.setMonth(calCalendar[0].get(Calendar.MONTH));
+                afterDate.setDay(calCalendar[0].get(Calendar.DAY_OF_MONTH));
+                Log.i("calDate.day", String.valueOf(afterDate.getDay()));
+                textViewAfter.setText("days after: " + afterDate.display_date());
 
                 return false;
             }
