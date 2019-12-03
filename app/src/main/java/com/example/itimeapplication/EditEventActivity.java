@@ -259,7 +259,7 @@ public class EditEventActivity extends AppCompatActivity {
                         Log.i("测试：", "onActivityResult: uriImage is " + imageUri);
 
                         //设置照片存储文件及剪切图片
-                        String name = DateFormat.format("eventBackground", Calendar.getInstance(Locale.CHINA)) + ".png";
+                        String name = DateFormat.format("eventBackground"+imageUri, Calendar.getInstance(Locale.CHINA)) + ".png";
                         Log.i("测试：", " name : " + name);
                         //定义图片存放的位置
                         filePath = new File(EditEventActivity.this.getExternalCacheDir(), name);
