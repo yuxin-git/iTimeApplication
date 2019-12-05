@@ -191,6 +191,9 @@ public class EventDetailsActivity extends AppCompatActivity {
                 thisEvent=event5;
 
                 textViewName.setText(event5.getName());
+                Bitmap bitmap = BitmapFactory.decodeFile(event5.getPictureFilePath().toString());
+                imageViewPicture.setImageBitmap(bitmap);
+
 
             }
         }
