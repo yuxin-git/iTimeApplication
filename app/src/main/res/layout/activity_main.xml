@@ -64,7 +64,7 @@
     </RelativeLayout>
 
     </LinearLayout>
-
+<!--
     <RelativeLayout
         android:id="@+id/main_left_drawer_layout"
         android:layout_width="240dp"
@@ -78,10 +78,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="左边菜单测试" />
+-->
 
-    </RelativeLayout>
-
-    <!--
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/nav_view"
             android:layout_width="wrap_content"
@@ -90,7 +88,12 @@
             android:fitsSystemWindows="true"
             app:headerLayout="@layout/nav_header_main"
             app:menu="@menu/activity_main_drawer" />
-    -->
+
+<!--
+    </RelativeLayout>
+-->
+
+
     </androidx.drawerlayout.widget.DrawerLayout>
 
     <!--

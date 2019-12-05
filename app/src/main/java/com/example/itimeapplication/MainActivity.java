@@ -7,6 +7,10 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,6 +19,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -28,6 +33,7 @@ import android.widget.Toast;
 import com.example.itimeapplication.data.EventSource;
 import com.example.itimeapplication.data.model.Event;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 
@@ -50,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
     public DrawerLayout drawerLayout;
     private RelativeLayout main_left_drawer_layout;
 
+    private AppBarConfiguration mAppBarConfiguration;
+
    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,13 +66,35 @@ public class MainActivity extends AppCompatActivity {
        Toolbar toolbar = findViewById(R.id.toolbar);
        setSupportActionBar(toolbar);
 
+       NavigationView navigationView = findViewById(R.id.nav_view);
        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
        //设置菜单内容之外其他区域的背景色
        drawerLayout.setScrimColor(Color.TRANSPARENT);
 
-       //左边菜单
-       main_left_drawer_layout = (RelativeLayout) findViewById(R.id.main_left_drawer_layout);
+       ActionBarDrawerToggle actionBarDrawerToggle=
+               new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+       //同步状态，刷新页面
+       drawerLayout.addDrawerListener(actionBarDrawerToggle);
+       actionBarDrawerToggle.syncState();
+
+       navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+           @Override
+           public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+               switch (menuItem.getItemId()) {
+                   case R.id.nav_event:
+                       drawerLayout.closeDrawers();
+                       break;
+                   case R.id.nav_color:
+
+
+
+               }
+               return false;
+           }
+       });
+
+
 
 
         eventSource=new EventSource(this);
