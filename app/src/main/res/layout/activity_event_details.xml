@@ -9,7 +9,7 @@
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="fill_parent"
-        android:layout_height="225dp"
+        android:layout_height="224dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -18,7 +18,7 @@
             android:id="@+id/image_view_det_pic"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:srcCompat="@drawable/a1" />
+            app:srcCompat="@drawable/a10" />
 
 
 
@@ -49,7 +49,7 @@
             app:backgroundTint="@color/iconBackground"
             app:elevation="50dp"
             app:fabSize="mini"
-            app:srcCompat="@drawable/ic_delete_white"
+            app:srcCompat="@drawable/ic_delete"
             tools:ignore="VectorDrawableCompat" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -213,55 +213,114 @@
 
     </FrameLayout>
 
-    <ImageView
-        android:id="@+id/image_view_det_name"
-        android:layout_width="60dp"
+    <LinearLayout
+        android:id="@+id/linearLayout_des"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:background="@drawable/border"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout"
-        app:srcCompat="@drawable/con1" />
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout">
 
-    <ImageView
-        android:id="@+id/image_view_det_remain"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        <TextView
+            android:id="@+id/text_view_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|left"
+            android:layout_marginLeft="30dp"
+            android:layout_marginBottom="7dp"
+
+            android:textSize="22dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_view_det_name"
-        app:srcCompat="@drawable/con2" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout_des"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_view_det_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="15dp"
-        android:text="TextView"
-        android:textSize="22dp"
-        app:layout_constraintStart_toEndOf="@+id/image_view_det_name"
-        app:layout_constraintTop_toTopOf="@+id/image_view_det_name" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/text_view_det_remain_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="5dp"
-        android:text="TextView"
-        android:textSize="22dp"
-        app:layout_constraintStart_toEndOf="@+id/image_view_det_remain"
-        app:layout_constraintTop_toTopOf="@+id/image_view_det_remain" />
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="33dp"
+                android:layout_height="33dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_notifications"
+                tools:ignore="VectorDrawableCompat" />
 
-    <TextView
-        android:id="@+id/text_view_det_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:text="TextView"
-        app:layout_constraintStart_toEndOf="@+id/image_view_det_remain"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_det_remain_time" />
+            <Switch
+                android:id="@+id/switch1"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|right"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="30dp"
+                android:layout_weight="1"
+                android:text="Notification"
+                android:textSize="18dp" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="33dp"
+                android:layout_height="33dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_event"
+                tools:ignore="VectorDrawableCompat" />
+
+            <Switch
+                android:id="@+id/switch2"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|right"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="30dp"
+                android:layout_weight="1"
+                android:text="Show in calendar"
+                android:textSize="18dp" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="33dp"
+                android:layout_height="33dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_list"
+                tools:ignore="VectorDrawableCompat" />
+
+            <Switch
+                android:id="@+id/switch3"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|right"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="30dp"
+                android:layout_weight="1"
+                android:text="IconShortcut"
+                android:textSize="18dp" />
+        </LinearLayout>
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

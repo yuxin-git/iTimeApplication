@@ -34,10 +34,12 @@ public class EventDetailsActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_DELETE_EVENT = 204;
     private Event thisEvent;
 
+
     private TextView textViewDays;
     private TextView textViewHours;
     private TextView textViewMunites;
     private TextView textViewSeconds;
+    private TextView textViewDescription;
 
     Calendar calendar1,calendar2;
     int remain_time_s;    //保存事件时间和当前时间的差（秒为单位）
@@ -68,6 +70,10 @@ public class EventDetailsActivity extends AppCompatActivity {
         textViewHours=findViewById(R.id.text_view_dis_hour);
         textViewMunites=findViewById(R.id.text_view_dis_minute);
         textViewSeconds=findViewById(R.id.text_view_dis_second);
+
+        textViewDescription=findViewById(R.id.text_view_description);
+        if(!thisEvent.getDescription().isEmpty())
+            textViewDescription.setText(thisEvent.getDescription());
 
 
         calendar2=Calendar.getInstance();

@@ -15,7 +15,7 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="53dp"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
@@ -33,15 +33,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
-
         <ListView
             android:id="@+id/list_view_time"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:layout_editor_absoluteX="47dp"
             tools:layout_editor_absoluteY="133dp">
-
 
         </ListView>
 
@@ -64,21 +61,6 @@
     </RelativeLayout>
 
     </LinearLayout>
-<!--
-    <RelativeLayout
-        android:id="@+id/main_left_drawer_layout"
-        android:layout_width="240dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@color/colorPrimary"
-        android:paddingTop="50dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="左边菜单测试" />
--->
 
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/nav_view"
@@ -89,49 +71,5 @@
             app:headerLayout="@layout/nav_header_main"
             app:menu="@menu/activity_main_drawer" />
 
-<!--
-    </RelativeLayout>
--->
-
 
     </androidx.drawerlayout.widget.DrawerLayout>
-
-    <!--
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MainActivity">
-
-
-        <ListView
-            android:id="@+id/list_view_time"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:layout_editor_absoluteX="47dp"
-            tools:layout_editor_absoluteY="133dp" >
-
-
-        </ListView>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_marginBottom="50dp"
-            android:clickable="true"
-            app:backgroundTint="@color/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_add_white"
-            tools:ignore="VectorDrawableCompat" />
-
-
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    -->

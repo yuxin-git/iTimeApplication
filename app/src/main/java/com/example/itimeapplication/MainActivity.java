@@ -12,11 +12,13 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -35,7 +37,11 @@ import com.example.itimeapplication.data.model.Event;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -52,8 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private int deleteCode=0; //控制删除操作，为1则执行删除操作，否则不执行
     private int deleteItemPosition;
 
-    private ActionBarDrawerToggle drawerbar;
-    public DrawerLayout drawerLayout;
+    private DrawerLayout drawerLayout;
     private RelativeLayout main_left_drawer_layout;
 
     private AppBarConfiguration mAppBarConfiguration;
@@ -63,50 +68,50 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-       Toolbar toolbar = findViewById(R.id.toolbar);
-       setSupportActionBar(toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-       NavigationView navigationView = findViewById(R.id.nav_view);
-       drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-       //设置菜单内容之外其他区域的背景色
-       drawerLayout.setScrimColor(Color.TRANSPARENT);
+       eventSource=new EventSource(this);
+       events=eventSource.load();
 
-       ActionBarDrawerToggle actionBarDrawerToggle=
+
+       theAdapter=new TimesArrayAdapter(this,R.layout.list_item_event, events);
+
+
+       listViewEvent= this.findViewById(R.id.list_view_time);
+       listViewEvent.setAdapter(theAdapter);
+       listViewEvent.setDivider(null);     //取消listview中item间的边框
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        //设置菜单内容之外其他区域的背景色
+        drawerLayout.setScrimColor(Color.TRANSPARENT);
+
+        ActionBarDrawerToggle actionBarDrawerToggle=
                new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
-       //同步状态，刷新页面
-       drawerLayout.addDrawerListener(actionBarDrawerToggle);
-       actionBarDrawerToggle.syncState();
+        //同步状态，刷新页面
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
 
-       navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-           @Override
-           public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                switch (menuItem.getItemId()) {
                    case R.id.nav_event:
                        drawerLayout.closeDrawers();
                        break;
                    case R.id.nav_color:
 
-
-
                }
                return false;
-           }
+              }
        });
 
 
 
 
-        eventSource=new EventSource(this);
-        events=eventSource.load();
-
-
-        theAdapter=new TimesArrayAdapter(this,R.layout.list_item_event, events);
-
-
-        listViewEvent= this.findViewById(R.id.list_view_time);
-        listViewEvent.setAdapter(theAdapter);
-        listViewEvent.setDivider(null);     //取消listview中item间的边框
 
 
         //点击+按钮，跳转至EditTimeActivity新建一条数据
@@ -178,16 +183,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-    }
-
-    private void InitData()
-    {
-        /*
-        events.add(new Event("Birthday1","2001","无"));
-        events.add(new Event(R.drawable.a1,"2DAYS","bir2","2003","无"));
-        events.add(new Event(R.drawable.a1,"ADAYS","birth4","1999","无"));
-
-         */
     }
 
     private void DeleteEvent(int position)
@@ -470,7 +465,7 @@ public class MainActivity extends AppCompatActivity {
             TextView description = (TextView)item.findViewById(R.id.text_view_description);
 
             Event event_item = this.getItem(position);
-            pic.setImageResource(R.drawable.a1);
+            pic.setImageResource(R.drawable.a9);
             remain_time.setText(event_item.display_remian_time());
             name.setText(event_item.getName());
             date.setText(event_item.getDate().display_date_and_time());

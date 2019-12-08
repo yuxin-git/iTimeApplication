@@ -9,7 +9,7 @@
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="fill_parent"
-        android:layout_height="240dp"
+        android:layout_height="224dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
