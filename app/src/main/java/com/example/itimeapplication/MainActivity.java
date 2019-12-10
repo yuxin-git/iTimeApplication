@@ -3,9 +3,11 @@ package com.example.itimeapplication;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -14,9 +16,12 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -59,16 +64,15 @@ public class MainActivity extends AppCompatActivity {
     private int deleteItemPosition;
 
     private DrawerLayout drawerLayout;
-    private RelativeLayout main_left_drawer_layout;
 
-    private AppBarConfiguration mAppBarConfiguration;
+    private ColorPickerDialog ColorPicker=null;
 
    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
 
@@ -103,27 +107,42 @@ public class MainActivity extends AppCompatActivity {
                        drawerLayout.closeDrawers();
                        break;
                    case R.id.nav_color:
+                       ColorPicker.show();
+                       break;
 
                }
                return false;
               }
        });
+       //点击+按钮，跳转至EditTimeActivity新建一条数据
+       fabAdd=findViewById(R.id.fab_add);
+       fabAdd.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               Intent intent=new Intent(MainActivity.this, EditEventActivity.class);
+               intent.putExtra("edit_code",0);
+               startActivityForResult(intent,REQUEST_CODE_NEW_EVENT);
+           }
+       });
+
+       ColorPickerDialog.OnColorChangedListener a = new ColorPickerDialog.OnColorChangedListener() {
+
+           @Override
+           public void colorChanged(int color) {
+               // TODO Auto-generated method stub
+               Log.i("设置了颜色 ", "1");
+               toolbar.setBackgroundColor(color);
+
+
+           }
+       };
+       ColorPicker=new ColorPickerDialog(this, a, Color.BLUE);
+       ColorPicker.setTitle("Pick Color");
 
 
 
 
 
-
-        //点击+按钮，跳转至EditTimeActivity新建一条数据
-        fabAdd=findViewById(R.id.fab_add);
-        fabAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent=new Intent(MainActivity.this, EditEventActivity.class);
-                intent.putExtra("edit_code",0);
-                startActivityForResult(intent,REQUEST_CODE_NEW_EVENT);
-            }
-        });
 
         //设置listview中item的点击事件，详情界面
         listViewEvent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
