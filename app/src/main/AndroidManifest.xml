@@ -12,6 +12,7 @@
         android:roundIcon="@drawable/clock"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ColorPicker"></activity>
         <activity android:name=".EventDetailsActivity" />
         <activity android:name=".EditEventActivity" />
         <activity android:name=".MainActivity">

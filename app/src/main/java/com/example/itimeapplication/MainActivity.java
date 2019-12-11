@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -15,12 +16,14 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -31,6 +34,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -99,21 +103,6 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-               switch (menuItem.getItemId()) {
-                   case R.id.nav_event:
-                       drawerLayout.closeDrawers();
-                       break;
-                   case R.id.nav_color:
-                       ColorPicker.show();
-                       break;
-
-               }
-               return false;
-              }
-       });
        //点击+按钮，跳转至EditTimeActivity新建一条数据
        fabAdd=findViewById(R.id.fab_add);
        fabAdd.setOnClickListener(new View.OnClickListener() {
@@ -125,19 +114,58 @@ public class MainActivity extends AppCompatActivity {
            }
        });
 
-       ColorPickerDialog.OnColorChangedListener a = new ColorPickerDialog.OnColorChangedListener() {
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+               switch (menuItem.getItemId()) {
+                   case R.id.nav_event:
+                       drawerLayout.closeDrawers();
+                       break;
+                   case R.id.nav_color:
+                       final int[] choose_color = new int[1];
+                       final View alertDialogView = getLayoutInflater().inflate(R.layout.color_picker_dialog_layout, null, false);
+                       final AlertDialog.Builder colorAlertDialog = new AlertDialog.Builder(MainActivity.this);
+                       colorAlertDialog.setView(alertDialogView);
 
-           @Override
-           public void colorChanged(int color) {
-               // TODO Auto-generated method stub
-               Log.i("设置了颜色 ", "1");
-               toolbar.setBackgroundColor(color);
+                       colorAlertDialog.setNegativeButton ("CANCEL", new DialogInterface.OnClickListener () {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               Toast.makeText(getApplicationContext(), "CANCEL！", Toast.LENGTH_LONG).show();
+                           }
+                       });
+                       colorAlertDialog.setPositiveButton ("OK", new DialogInterface.OnClickListener () {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               toolbar.setBackgroundColor(choose_color[0]);
+                               int[] colors = new int[]{choose_color[0], choose_color[0]};
+                               int[][] states = new int[2][];
+                               states[0] = new int[]{android.R.attr.state_pressed};
+                               states[1] = new int[]{android.R.attr.state_enabled};
+                               fabAdd.setBackgroundTintList(new ColorStateList(states, colors));
 
 
-           }
-       };
-       ColorPicker=new ColorPickerDialog(this, a, Color.BLUE);
-       ColorPicker.setTitle("Pick Color");
+                               Toast.makeText(getApplicationContext(), "OK！", Toast.LENGTH_LONG).show();
+                           }
+                       });
+                       final AlertDialog dialog = colorAlertDialog.show ();
+                       ColorPickerView picker = alertDialogView.findViewById(R.id.color_pick_view);
+                       picker.setOnColorPickerChangeListener(new ColorPickerView.OnColorPickerChangeListener() {
+                           @Override
+                           public void onColorChanged(ColorPickerView picker, int color) {
+                               choose_color[0] =color;
+                           }
+                           @Override
+                           public void onStartTrackingTouch(ColorPickerView picker) {
+                           }
+                           @Override
+                           public void onStopTrackingTouch(ColorPickerView picker) {
+                           }
+                       });
+                       break;
+               }
+               return false;
+              }
+       });
 
 
 
