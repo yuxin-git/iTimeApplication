@@ -68,8 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private int deleteItemPosition;
 
     private DrawerLayout drawerLayout;
-
-    private ColorPickerDialog ColorPicker=null;
+    private int[] choose_color = new int[1];
 
    @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,42 +78,43 @@ public class MainActivity extends AppCompatActivity {
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-       eventSource=new EventSource(this);
-       events=eventSource.load();
-
-
-       theAdapter=new TimesArrayAdapter(this,R.layout.list_item_event, events);
+        choose_color[0]=getResources().getColor(R.color.colorPrimary);
+        eventSource=new EventSource(this);
+        events=eventSource.load();
 
 
-       listViewEvent= this.findViewById(R.id.list_view_time);
-       listViewEvent.setAdapter(theAdapter);
-       listViewEvent.setDivider(null);     //取消listview中item间的边框
+        theAdapter=new TimesArrayAdapter(this,R.layout.list_item_event, events);
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        //设置菜单内容之外其他区域的背景色
-        drawerLayout.setScrimColor(Color.TRANSPARENT);
+        listViewEvent= this.findViewById(R.id.list_view_time);
+        listViewEvent.setAdapter(theAdapter);
+        listViewEvent.setDivider(null);     //取消listview中item间的边框
 
-        ActionBarDrawerToggle actionBarDrawerToggle=
+         NavigationView navigationView = findViewById(R.id.nav_view);
+         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+         //设置菜单内容之外其他区域的背景色
+         drawerLayout.setScrimColor(Color.TRANSPARENT);
+
+         ActionBarDrawerToggle actionBarDrawerToggle=
                new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
-        //同步状态，刷新页面
-        drawerLayout.addDrawerListener(actionBarDrawerToggle);
-        actionBarDrawerToggle.syncState();
+         //同步状态，刷新页面
+         drawerLayout.addDrawerListener(actionBarDrawerToggle);
+         actionBarDrawerToggle.syncState();
 
-       //点击+按钮，跳转至EditTimeActivity新建一条数据
-       fabAdd=findViewById(R.id.fab_add);
-       fabAdd.setOnClickListener(new View.OnClickListener() {
+        //点击+按钮，跳转至EditEventActivity新建一条数据
+        fabAdd=findViewById(R.id.fab_add);
+        fabAdd.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
                Intent intent=new Intent(MainActivity.this, EditEventActivity.class);
+               intent.putExtra("backgroundColor",choose_color[0]);
                intent.putExtra("edit_code",0);
                startActivityForResult(intent,REQUEST_CODE_NEW_EVENT);
-           }
-       });
+            }
+        });
 
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                switch (menuItem.getItemId()) {
@@ -122,11 +122,10 @@ public class MainActivity extends AppCompatActivity {
                        drawerLayout.closeDrawers();
                        break;
                    case R.id.nav_color:
-                       final int[] choose_color = new int[1];
                        final View alertDialogView = getLayoutInflater().inflate(R.layout.color_picker_dialog_layout, null, false);
                        final AlertDialog.Builder colorAlertDialog = new AlertDialog.Builder(MainActivity.this);
                        colorAlertDialog.setView(alertDialogView);
-
+                       colorAlertDialog.setTitle("Pick color");
                        colorAlertDialog.setNegativeButton ("CANCEL", new DialogInterface.OnClickListener () {
                            @Override
                            public void onClick(DialogInterface dialogInterface, int i) {
@@ -142,8 +141,6 @@ public class MainActivity extends AppCompatActivity {
                                states[0] = new int[]{android.R.attr.state_pressed};
                                states[1] = new int[]{android.R.attr.state_enabled};
                                fabAdd.setBackgroundTintList(new ColorStateList(states, colors));
-
-
                                Toast.makeText(getApplicationContext(), "OK！", Toast.LENGTH_LONG).show();
                            }
                        });
@@ -162,14 +159,12 @@ public class MainActivity extends AppCompatActivity {
                            }
                        });
                        break;
+                   case R.id.nav_about:
+                       Toast.makeText(getApplicationContext(), "Development by hyx!", Toast.LENGTH_LONG).show();
                }
                return false;
               }
        });
-
-
-
-
 
 
         //设置listview中item的点击事件，详情界面
@@ -195,8 +190,6 @@ public class MainActivity extends AppCompatActivity {
         deleteItemPosition=getIntent().getIntExtra("delete_position",0);
         if(deleteCode==1)   //执行删除操作
             DeleteEvent(deleteItemPosition); //自定义删除操作函数
-
-
 
     }
 

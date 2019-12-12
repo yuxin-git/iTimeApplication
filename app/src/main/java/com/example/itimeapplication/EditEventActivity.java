@@ -91,6 +91,7 @@ public class EditEventActivity extends AppCompatActivity {
 
     private int editCode;
 
+    private int color;
     //private Bitmap myBitmap=BitmapFactory.decodeResource(getResources(), R.drawable.a1);
 
     @Override
@@ -101,6 +102,8 @@ public class EditEventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_event);
 
         imageViewPic = findViewById(R.id.image_view_pic);
+        color=getIntent().getIntExtra("backgroundColor",0);
+        imageViewPic.setBackgroundColor(color);
 
         //获取当前时间,并将mDate初始化为当前时间
         calendar = Calendar.getInstance();
