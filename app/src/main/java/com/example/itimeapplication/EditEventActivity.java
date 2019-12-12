@@ -122,7 +122,6 @@ public class EditEventActivity extends AppCompatActivity {
                 Bitmap bitmap = BitmapFactory.decodeFile(thisEvent.getPictureFilePath().toString());
                 imageViewPic.setImageBitmap(bitmap);
             }
-
         }
 
         fabBack = findViewById(R.id.fab_edit_back);
@@ -134,7 +133,6 @@ public class EditEventActivity extends AppCompatActivity {
                 EditEventActivity.this.finish();
             }
         });
-
         fabOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -149,7 +147,6 @@ public class EditEventActivity extends AppCompatActivity {
                         Intent intent = new Intent(EditEventActivity.this,MainActivity.class);
                         Bundle mBundle = new Bundle();
                         mBundle.putSerializable("data.txt", thisEvent);
-
                         intent.putExtras(mBundle);
                         setResult(RESULT_OK, intent);
                         EditEventActivity.this.finish();
@@ -163,7 +160,6 @@ public class EditEventActivity extends AppCompatActivity {
                         intent.putExtras(mBundle);
                         setResult(RESULT_OK, intent);
                         EditEventActivity.this.finish();
-
                     }
 
                 }
@@ -298,7 +294,8 @@ public class EditEventActivity extends AppCompatActivity {
         otherConditions.add(new OtherCondition(R.drawable.label, "Add Label", ""));
     }
 
-    private void showDailog() {     //日历弹出选择框
+    //日历弹出选择框
+    private void showDailog() {
         calendar = Calendar.getInstance();
         datePickerDialog = new DatePickerDialog(EditEventActivity.this, R.style.Theme_AppCompat_Light_Dialog,
                 null, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
@@ -333,7 +330,8 @@ public class EditEventActivity extends AppCompatActivity {
 
     }
 
-    private void showTime() {       //时间弹出选择框
+    //时间弹出选择框
+    private void showTime() {
         timePickerDialog = new TimePickerDialog(this, R.style.Theme_AppCompat_Light_Dialog, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -365,6 +363,7 @@ public class EditEventActivity extends AppCompatActivity {
         timePickerDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
+    //日期计算器弹出框
     private void showDateCalculator() {
         final Calendar[] calCalendar = {Calendar.getInstance()};    //获取当前时间
         final EventDate afterDate = new EventDate(calCalendar[0].get(Calendar.YEAR), calCalendar[0].get(Calendar.MONTH),
@@ -463,10 +462,9 @@ public class EditEventActivity extends AppCompatActivity {
                 showTime();
             }
         });
-
-
     }
 
+    //周期选择弹出框
     private void showRepeat()
     {
         String[] repeat = new String[]{"Weak","Month","Year","Custom","None"};
@@ -518,8 +516,6 @@ public class EditEventActivity extends AppCompatActivity {
                             })
                             .setNegativeButton("CANCEL", null)
                             .show();
-
-
                 }
                 if(which==4) {    //不重复
                     repeat_day = 0;

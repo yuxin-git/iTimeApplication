@@ -1,4 +1,4 @@
-package com.example.itimeapplication;
+package com.example.itimeapplication.data;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -18,6 +18,8 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.Nullable;
+
+import com.example.itimeapplication.R;
 
 /**
  * Created by DuanJiaNing on 2017/8/14.

@@ -3,30 +3,19 @@ package com.example.itimeapplication;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -34,23 +23,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.itimeapplication.data.ColorPickerView;
 import com.example.itimeapplication.data.EventSource;
 import com.example.itimeapplication.data.model.Event;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.UUID;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -66,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     private int deleteCode=0; //控制删除操作，为1则执行删除操作，否则不执行
     private int deleteItemPosition;
+    private Toolbar toolbar;
 
     private DrawerLayout drawerLayout;
     private int[] choose_color = new int[1];
@@ -75,16 +60,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        final Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         choose_color[0]=getResources().getColor(R.color.colorPrimary);
         eventSource=new EventSource(this);
         events=eventSource.load();
 
-
         theAdapter=new TimesArrayAdapter(this,R.layout.list_item_event, events);
-
 
         listViewEvent= this.findViewById(R.id.list_view_time);
         listViewEvent.setAdapter(theAdapter);
@@ -122,42 +105,7 @@ public class MainActivity extends AppCompatActivity {
                        drawerLayout.closeDrawers();
                        break;
                    case R.id.nav_color:
-                       final View alertDialogView = getLayoutInflater().inflate(R.layout.color_picker_dialog_layout, null, false);
-                       final AlertDialog.Builder colorAlertDialog = new AlertDialog.Builder(MainActivity.this);
-                       colorAlertDialog.setView(alertDialogView);
-                       colorAlertDialog.setTitle("Pick color");
-                       colorAlertDialog.setNegativeButton ("CANCEL", new DialogInterface.OnClickListener () {
-                           @Override
-                           public void onClick(DialogInterface dialogInterface, int i) {
-                               Toast.makeText(getApplicationContext(), "CANCEL！", Toast.LENGTH_LONG).show();
-                           }
-                       });
-                       colorAlertDialog.setPositiveButton ("OK", new DialogInterface.OnClickListener () {
-                           @Override
-                           public void onClick(DialogInterface dialogInterface, int i) {
-                               toolbar.setBackgroundColor(choose_color[0]);
-                               int[] colors = new int[]{choose_color[0], choose_color[0]};
-                               int[][] states = new int[2][];
-                               states[0] = new int[]{android.R.attr.state_pressed};
-                               states[1] = new int[]{android.R.attr.state_enabled};
-                               fabAdd.setBackgroundTintList(new ColorStateList(states, colors));
-                               Toast.makeText(getApplicationContext(), "OK！", Toast.LENGTH_LONG).show();
-                           }
-                       });
-                       final AlertDialog dialog = colorAlertDialog.show ();
-                       ColorPickerView picker = alertDialogView.findViewById(R.id.color_pick_view);
-                       picker.setOnColorPickerChangeListener(new ColorPickerView.OnColorPickerChangeListener() {
-                           @Override
-                           public void onColorChanged(ColorPickerView picker, int color) {
-                               choose_color[0] =color;
-                           }
-                           @Override
-                           public void onStartTrackingTouch(ColorPickerView picker) {
-                           }
-                           @Override
-                           public void onStopTrackingTouch(ColorPickerView picker) {
-                           }
-                       });
+                       chooseColor();
                        break;
                    case R.id.nav_about:
                        Toast.makeText(getApplicationContext(), "Development by hyx!", Toast.LENGTH_LONG).show();
@@ -172,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.i("点击了一个item ","1");
-
                 Intent intent=new Intent(MainActivity.this, EventDetailsActivity.class);
                 intent.putExtra("time_position",i);
                 Event thisEvent=events.get(i);
@@ -276,8 +223,48 @@ public class MainActivity extends AppCompatActivity {
         return result;
     }
 
+    private void chooseColor()
+    {
+        final View alertDialogView = getLayoutInflater().inflate(R.layout.color_picker_dialog_layout, null, false);
+        final AlertDialog.Builder colorAlertDialog = new AlertDialog.Builder(MainActivity.this);
+        colorAlertDialog.setView(alertDialogView);
+        colorAlertDialog.setTitle("Pick color");
+        colorAlertDialog.setNegativeButton ("CANCEL", new DialogInterface.OnClickListener () {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Toast.makeText(getApplicationContext(), "CANCEL！", Toast.LENGTH_LONG).show();
+            }
+        });
+        colorAlertDialog.setPositiveButton ("OK", new DialogInterface.OnClickListener () {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                toolbar.setBackgroundColor(choose_color[0]);
+                int[] colors = new int[]{choose_color[0], choose_color[0]};
+                int[][] states = new int[2][];
+                states[0] = new int[]{android.R.attr.state_pressed};
+                states[1] = new int[]{android.R.attr.state_enabled};
+                fabAdd.setBackgroundTintList(new ColorStateList(states, colors));
+                Toast.makeText(getApplicationContext(), "OK！", Toast.LENGTH_LONG).show();
+            }
+        });
+        final AlertDialog dialog = colorAlertDialog.show ();
+        ColorPickerView picker = alertDialogView.findViewById(R.id.color_pick_view);
+        picker.setOnColorPickerChangeListener(new ColorPickerView.OnColorPickerChangeListener() {
+            @Override
+            public void onColorChanged(ColorPickerView picker, int color) {
+                choose_color[0] =color;
+            }
+            @Override
+            public void onStartTrackingTouch(ColorPickerView picker) {
+            }
+            @Override
+            public void onStopTrackingTouch(ColorPickerView picker) {
+            }
+        });
+    }
 
-    public static Bitmap doBlur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap) {
+
+   public static Bitmap doBlur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap) {
         Bitmap bitmap;
         if (canReuseInBitmap) {
             bitmap = sentBitmap;
@@ -505,7 +492,7 @@ public class MainActivity extends AppCompatActivity {
             TextView description = (TextView)item.findViewById(R.id.text_view_description);
 
             Event event_item = this.getItem(position);
-            pic.setImageResource(R.drawable.a9);
+            pic.setImageResource(R.drawable.moren);
             remain_time.setText(event_item.display_remian_time());
             name.setText(event_item.getName());
             date.setText(event_item.getDate().display_date_and_time());
